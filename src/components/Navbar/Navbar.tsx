@@ -1,10 +1,18 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./Navbar.css";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
+const handleLogout = () => {
+  localStorage.clear();
+  navigate("/login", { replace: true });
+};
+
 
   return (
     <nav className="custom-navbar">
@@ -25,7 +33,7 @@ export default function Navbar() {
           <div className="profile-dropdown">
             <div className="dropdown-item">Profile</div>
             <div className="dropdown-item">Settings</div>
-            <div className="dropdown-item logout">Logout</div>
+            <div className="dropdown-item logout" onClick={()=>handleLogout()}>Logout</div>
           </div>
         )}
       </div>
