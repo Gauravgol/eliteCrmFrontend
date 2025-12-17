@@ -7,6 +7,7 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import Projects from "./components/Projects/Projects";
 import NewProject from "./components/NewProjects/NewProject";
 import Dashboard from "./components/Dashboard/Dashboard";
+import ProjectDetails from "./components/ProjectDetails/ProjectDetails";
 
 function App() {
   // simple auth check (later you can replace with context / redux)
@@ -32,6 +33,7 @@ function App() {
         <Route path="/projects" element={<Projects />} />
         <Route path="/projects/new" element={<NewProject />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/projects/:projectId" element={<ProjectDetails />} />
 
       </Routes>
     </>

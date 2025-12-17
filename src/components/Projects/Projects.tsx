@@ -91,7 +91,7 @@ function Projects() {
   };
   
   return (
-    <div className="projects-page">
+    <div className="page-container">
 
       {/* Top Bar */}
       <div className="projects-top-bar">
@@ -135,7 +135,7 @@ function Projects() {
             </thead>
             <tbody>
               {projects.map((p) => (
-                <tr key={p._id}>
+                <tr key={p._id} onClick={() => navigate(`/projects/${p._id}`)} style={{ cursor: "pointer" }}>
                   <td>{p.name}</td>
                   <td>{p.description}</td>
                   <td>{p.owner}</td>

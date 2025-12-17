@@ -20,7 +20,7 @@ const handleLogout = () => {
       <div className="nav-left-space"></div>
 
       {/* Center title */}
-      <span className="nav-title">Elite CRM</span>
+      <span className="nav-title">Solar Sync Solutions</span>
 
       {/* Profile + Dropdown */}
       <div className="nav-profile-wrapper">
