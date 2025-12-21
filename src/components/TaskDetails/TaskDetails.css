@@ -1,0 +1,221 @@
+ /* ================= HEADER ================= */
+  
+  .task-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .task-header button {
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    color: #1565c0;
+  }
+  
+  .task-header h2 {
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  
+  .task-header .muted {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  /* ================= BODY LAYOUT ================= */
+  
+  .task-body {
+    display: grid;
+    grid-template-columns: 2.5fr 1fr;
+    gap: 20px;
+  }
+  
+  /* ================= LEFT PANEL ================= */
+  
+  .task-main {
+    background: #fff;
+    padding: 16px;
+    border-radius: 8px;
+  }
+  
+  /* Section headings */
+  .task-main h4 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  
+  /* Description */
+  .task-desc {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+  
+  /* ================= ATTACHMENTS ================= */
+  
+  .attachment {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+  
+  .attachment a {
+    color: #1565c0;
+    text-decoration: none;
+  }
+  
+  .attachment a:hover {
+    text-decoration: underline;
+  }
+  
+  /* ================= COMMENTS ================= */
+  
+  .comment {
+    border-top: 1px solid #eee;
+    padding-top: 8px;
+    margin-top: 8px;
+  }
+  
+  .comment strong {
+    font-size: 14px;
+  }
+  
+  .comment p {
+    font-size: 14px;
+    color: #555;
+    margin-top: 4px;
+  }
+  
+  /* ================= RIGHT PANEL ================= */
+  
+  .task-info {
+    background: #fff;
+    padding: 16px;
+    border-radius: 8px;
+    height: fit-content;
+  }
+  
+  .task-info .info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+  
+  .task-info label {
+    font-weight: 500;
+    color: #444;
+  }
+  
+  /* Status badges (reuse ProjectDetails logic) */
+  .task-info .status {
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+  }
+  
+  .task-info .status.TODO {
+    background: #e3f2fd;
+    color: #1565c0;
+  }
+  
+  .task-info .status.IN_PROGRESS,
+  .task-info .status.INPROGRESS {
+    background: #fff3e0;
+    color: #ef6c00;
+  }
+  
+  .task-info .status.DONE {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+  
+  .task-info .status.HOLD {
+    background: #f3e5f5;
+    color: #6a1b9a;
+  }
+  
+  /* Priority badges */
+  .task-info .priority {
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+  }
+  
+  .task-info .priority.HIGH {
+    background: #ffebee;
+    color: #c62828;
+  }
+  
+  .task-info .priority.MEDIUM {
+    background: #fff8e1;
+    color: #ef6c00;
+  }
+  
+  .task-info .priority.LOW {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+  
+  /* ================= STATES ================= */
+  
+  .loading,
+  .error,
+  .empty-state {
+    padding: 40px;
+    text-align: center;
+    color: #666;
+  }
+  
+  /* ================= RESPONSIVE ================= */
+  
+  @media (max-width: 900px) {
+    .task-body {
+      grid-template-columns: 1fr;
+    }
+  
+    .task-info {
+      order: -1;
+    }
+  }
+  
+  .editable {
+    cursor: pointer;
+  }
+  
+  .inline-input {
+    width: 100%;
+    font-size: 22px;
+    font-weight: 600;
+    padding: 4px;
+  }
+  
+  .inline-textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 8px;
+    font-size: 14px;
+  }
+  
+  .comment-box {
+    width: 100%;
+    height: 50px;
+    margin-top: 8px;
+    padding: 6px;
+    font-size: 13px;
+  }
+  
+  .comment-btn {
+    margin-top: 6px;
+    padding: 4px 10px;
+    font-size: 13px;
+  }
