@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
 
 import Login from "./components/Login/Login";
@@ -12,7 +12,7 @@ import TaskDetails from "./components/TaskDetails/TaskDetails";
 
 function App() {
   // simple auth check (later you can replace with context / redux)
-  const navigate = useNavigate();
+  
 
   const isLoggedIn = !!localStorage.getItem("token");
 
