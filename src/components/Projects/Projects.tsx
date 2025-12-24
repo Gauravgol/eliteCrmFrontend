@@ -12,9 +12,12 @@ interface Project {
   _id: string;
   name: string;
   description: string;
-  owner: string;
+  owner: {
+    name: string;
+    email: string;
+  };
   status: string;
-  endDate: string;
+  dueDate: string;
 }
 
 function Projects() {
@@ -28,72 +31,65 @@ function Projects() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // 🔁 Fetch Projects
+  /* ---------------- FETCH PROJECTS ---------------- */
+
   const fetchProjects = async () => {
     try {
       setLoading(true);
       setError("");
 
-      const res = await axios.get(
-        `${API_BASE_URL}/getProjects`,
-        {
-          params: {
-            search,
-            page: currentPage,
-            limit: itemsPerPage,
-          },
-          headers: {
-            urn: generateUrn(),
-          },
-        }
-      );
+      const res = await axios.get(`${API_BASE_URL}/getProjects`, {
+        params: {
+          search,
+          page: currentPage,
+          limit: itemsPerPage,
+        },
+        headers: {
+          urn: generateUrn(),
+        },
+      });
 
       const data = res.data.apiResponseData;
-
-      setProjects(data.list);
+      setProjects(data.list || []);
       setTotalPages(data.pagination.totalPages);
-
-    } catch (err: any) {
+    } catch {
       setError("Failed to fetch projects");
     } finally {
       setLoading(false);
     }
   };
 
-  // 🔄 Call API on changes
   useEffect(() => {
     fetchProjects();
   }, [search, currentPage, itemsPerPage]);
+
+  /* ---------------- PAGINATION ---------------- */
+
   const getPaginationPages = () => {
     const pages: (number | string)[] = [];
-  
+
     if (totalPages <= 5) {
       for (let i = 1; i <= totalPages; i++) pages.push(i);
       return pages;
     }
-  
+
     pages.push(1);
-  
     if (currentPage > 3) pages.push("...");
-  
+
     const start = Math.max(2, currentPage - 1);
     const end = Math.min(totalPages - 1, currentPage + 1);
-  
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
-    }
-  
+
+    for (let i = start; i <= end; i++) pages.push(i);
+
     if (currentPage < totalPages - 2) pages.push("...");
-  
     pages.push(totalPages);
-  
+
     return pages;
   };
-  
+
   return (
     <div className="page-container">
-
-      {/* Top Bar */}
+      {/* ================= TOP BAR ================= */}
       <div className="projects-top-bar">
         <input
           type="text"
@@ -106,16 +102,14 @@ function Projects() {
           }}
         />
 
-        <button
-          className="btn btn-dark"
-          onClick={() => navigate("/projects/new")}
-        >
+        <button className="btn btn-dark" onClick={() => navigate("/projects/new")}>
           + Add New Project
         </button>
       </div>
 
-      {/* Table */}
+      {/* ================= PROJECT LIST ================= */}
       <div className="projects-table-wrapper">
+      <h4 className="projects-title">Projects</h4>
         {loading ? (
           <div className="text-center py-5">Loading projects...</div>
         ) : error ? (
@@ -123,38 +117,34 @@ function Projects() {
         ) : projects.length === 0 ? (
           <div className="text-center py-5">No projects found</div>
         ) : (
-          <table className="table table-bordered table-hover">
-            <thead className="table-dark">
-              <tr>
-                <th>Project Name</th>
-                <th>Description</th>
-                <th>Owner</th>
-                <th>Due Date</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {projects.map((p) => (
-                <tr key={p._id} onClick={() => navigate(`/projects/${p._id}`)} style={{ cursor: "pointer" }}>
-                  <td>{p.name}</td>
-                  <td>{p.description}</td>
-                  <td>{p.owner}</td>
-                  <td>{new Date(p.endDate).toLocaleDateString()}</td>
-                  <td>
-                    <span className={`status ${p.status.toLowerCase()}`}>
-                      {p.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          projects.map((p) => (
+            <div
+              key={p._id}
+              className="project-row"
+              onClick={() => navigate(`/projects/${p._id}`)}
+            >
+              <div className="project-title">{p.name}</div>
+
+              <div className="project-meta">
+                <span className="meta-item">
+                  👤 {p.owner?.name || "Unknown"}
+                </span>
+
+                <span className={`status ${p.status.toLowerCase()}`}>
+                  {p.status}
+                </span>
+
+                <span className="meta-item">
+                  📅 {p.dueDate ? new Date(p.dueDate).toLocaleDateString() : "-"}
+                </span>
+              </div>
+            </div>
+          ))
         )}
 
-        {/* Pagination Row */}
+        {/* ================= PAGINATION ================= */}
         {!loading && projects.length > 0 && (
           <div className="pagination-row">
-            {/* Left */}
             <div className="items-per-page">
               <span>Items per page</span>
               <select
@@ -170,42 +160,37 @@ function Projects() {
               </select>
             </div>
 
-            {/* Right */}
             <div className="pagination-controls">
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((p) => p - 1)}
+              >
+                Prev
+              </button>
 
-  {/* Prev */}
-  <button
-    disabled={currentPage === 1}
-    onClick={() => setCurrentPage((p) => p - 1)}
-  >
-    Prev
-  </button>
+              {getPaginationPages().map((page, index) =>
+                page === "..." ? (
+                  <span key={index} className="dots">
+                    ...
+                  </span>
+                ) : (
+                  <button
+                    key={index}
+                    className={currentPage === page ? "active" : ""}
+                    onClick={() => setCurrentPage(page as number)}
+                  >
+                    {page}
+                  </button>
+                )
+              )}
 
-  {/* Page Numbers */}
-  {getPaginationPages().map((page, index) =>
-    page === "..." ? (
-      <span key={index} className="dots">...</span>
-    ) : (
-      <button
-        key={index}
-        className={currentPage === page ? "active" : ""}
-        onClick={() => setCurrentPage(page as number)}
-      >
-        {page}
-      </button>
-    )
-  )}
-
-  {/* Next */}
-  <button
-    disabled={currentPage === totalPages}
-    onClick={() => setCurrentPage((p) => p + 1)}
-  >
-    Next
-  </button>
-
-</div>
-
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((p) => p + 1)}
+              >
+                Next
+              </button>
+            </div>
           </div>
         )}
       </div>

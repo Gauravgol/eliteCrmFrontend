@@ -219,3 +219,49 @@
     padding: 4px 10px;
     font-size: 13px;
   }
+  .section-header {
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    margin: 12px 0 6px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .section-header:hover {
+    color: #1565c0;
+  }
+  .attachment-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #1565c0;
+    text-decoration: none;
+  }
+  
+  .attachment-link:hover {
+    text-decoration: underline;
+  }
+  
+  .attachment-icon {
+    font-size: 22px;   /* 👈 LARGE ICON */
+    line-height: 1;
+  }
+  .attach-btn {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 13px;
+    color: #1565c0;
+    cursor: pointer;
+    transition: color 0.2s ease, background-color 0.2s ease;
+    padding: 4px 6px;
+    border-radius: 4px;
+  }
+  
+  .attach-btn:hover {
+    background-color: #e3f2fd; /* light blue hover */
+    color: #0d47a1;
+  }

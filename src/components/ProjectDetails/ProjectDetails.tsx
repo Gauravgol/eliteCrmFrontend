@@ -490,7 +490,7 @@ export default function ProjectDetails() {
         {/* Header */}
         <div className="project-header">
           <h2>{project.name}</h2>
-          <p className="truncate-2">{project.description}</p>
+          {/* <p className="truncate-2">{project.description}</p> */}
         </div>
 
         <div className="project-body">
@@ -503,7 +503,7 @@ export default function ProjectDetails() {
               </button>
             </div>
 
-            {tasks.length === 0 ? (
+            {tasks?.length === 0 ? (
               <div className="empty-state">No tasks created yet</div>
             ) : (
               tasks.map((task) => (
@@ -513,7 +513,7 @@ export default function ProjectDetails() {
                     <span className={`status ${task.status}`}>{task.status}</span>
                     <span className={`priority ${task.priority}`}>{task.priority}</span>
                   </div>
-                  <p className="truncate-2 task-description">{task.description}
+                  {/* <p className="truncate-2 task-description">{task.description}
                   {task.attachments?.length > 0 && (
   <div style={{ marginTop: 6 }}>
     {task.attachments.map((att: any) => (
@@ -538,7 +538,8 @@ export default function ProjectDetails() {
       </div>
     ))}
   </div>
-)}</p>
+)}
+</p> */}
                   <div className="task-footer">
                     <span>Assigned: {task.assignedTo?.name || "Unassigned"}</span>
                     <span>Due: {task.dueDate ? new Date(task.dueDate).toDateString() : "-"}</span>
@@ -552,7 +553,7 @@ export default function ProjectDetails() {
           <div className="project-info">
             <h5>Project Info</h5>
             <div className="info-row"><label>Status</label><span>{project.status}</span></div>
-            <div className="info-row"><label>Owner</label><span>{project.owner}</span></div>
+            <div className="info-row"><label>Owner</label> <span>{project?.owner?.name || "-"}</span></div>
             <div className="info-row"><label>Start Date</label><span>{new Date(project.startDate).toDateString()}</span></div>
             <div className="info-row"><label>End Date</label><span>{new Date(project.endDate).toDateString()}</span></div>
           </div>
