@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 
 import Login from "./components/Login/Login";
@@ -9,36 +9,38 @@ import NewProject from "./components/NewProjects/NewProject";
 import Dashboard from "./components/Dashboard/Dashboard";
 import ProjectDetails from "./components/ProjectDetails/ProjectDetails";
 import TaskDetails from "./components/TaskDetails/TaskDetails";
+import NewTask from "./components/NewTask/NewTask";
 
 function App() {
-  // simple auth check (later you can replace with context / redux)
-  
-
   const isLoggedIn = !!localStorage.getItem("token");
 
-  // ❌ NOT LOGGED IN → SHOW LOGIN ONLY
-  if (!isLoggedIn) {
-    return <Login />;
-  }
-
-  // ✅ LOGGED IN → SHOW APP
   return (
-    <>
-      {/* Layout */}
-      <Navbar />
-      <Sidebar />
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route
+        path="/*"
+        element={
+          isLoggedIn ? (
+            <>
+              <Navbar />
+              <Sidebar />
 
-      {/* Pages */}
-      <Routes>
-        <Route path="/" element={<Projects />} />
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/projects/new" element={<NewProject />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/projects/:projectId" element={<ProjectDetails />} />
-        <Route path="/task/:taskId" element={<TaskDetails />} />
+              <Routes>
+                <Route path="projects" element={<Projects />} />
+                <Route path="projects/new" element={<NewProject />} />
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="projects/:projectId" element={<ProjectDetails />} />
+                <Route path="task/:taskId" element={<TaskDetails />} />
+                <Route path="/projects/:projectId/create-task" element={<NewTask />} />
 
-      </Routes>
-    </>
+              </Routes>
+            </>
+          ) : (
+            <Navigate to="/" replace />
+          )
+        }
+      />
+    </Routes>
   );
 }
 

@@ -1,11 +1,13 @@
 import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import "./NewProject.css";
 import { generateUrn } from "../../utils/generateUrn";
+import "./NewTask.css";
 
-export default function NewProject() {
-  const today = new Date().toISOString().split("T")[0];
+export default function NewTask() {
+  const { projectId } = useParams<{ projectId: string }>();
+  const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const token = localStorage.getItem("token");
@@ -13,13 +15,16 @@ export default function NewProject() {
   const [form, setForm] = useState({
     name: "",
     description: "",
-    startDate: today,
+    status: "TODO",
+    priority: "MEDIUM",
     dueDate: "",
-    status: "INPROGRESS",
+    assignedTo: "",
   });
 
   const [attachments, setAttachments] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
+
+  /* ---------------- HANDLERS ---------------- */
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -42,11 +47,13 @@ export default function NewProject() {
     setAttachments(Array.from(files));
   };
 
+  /* ---------------- SUBMIT ---------------- */
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!form.name || !form.dueDate) {
-      toast.error("Please fill all required fields");
+    if (!form.name || !projectId) {
+      toast.error("Task name is required");
       return;
     }
 
@@ -56,17 +63,20 @@ export default function NewProject() {
       const formData = new FormData();
       formData.append("name", form.name);
       formData.append("description", form.description);
-      formData.append("status", form.status);
-      formData.append("startDate", form.startDate);
-      formData.append("dueDate", form.dueDate);
-      formData.append("owner", user.id);
+      formData.append("projectId", projectId);
+      formData.append("createdBy", user.id);
+      formData.append("priority", form.priority);
+
+      if (form.status) formData.append("status", form.status);
+      if (form.dueDate) formData.append("dueDate", form.dueDate);
+      if (form.assignedTo) formData.append("assignedTo", form.assignedTo);
 
       attachments.forEach((file) => {
         formData.append("attachments", file);
       });
 
       const res = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/createProject`,
+        `${import.meta.env.VITE_API_BASE_URL}/createTask`,
         formData,
         {
           headers: {
@@ -77,18 +87,10 @@ export default function NewProject() {
       );
 
       if (res.data?.responseCode === "200") {
-        toast.success("Project created successfully 🎉");
-
-        setForm({
-          name: "",
-          description: "",
-          startDate: today,
-          dueDate: "",
-          status: "INPROGRESS",
-        });
-        setAttachments([]);
+        toast.success("Task created successfully 🎉");
+        navigate(`/projects/${projectId}`);
       } else {
-        toast.error(res.data?.responseMessage || "Failed to create project");
+        toast.error(res.data?.responseMessage || "Failed to create task");
       }
     } catch (error: any) {
       toast.error(
@@ -101,13 +103,13 @@ export default function NewProject() {
 
   return (
     <div className="page-container">
-      <div className="new-project-page">
-        <h2>Create New Project</h2>
+      <div className="new-task-page">
+        <h2>Create New Task</h2>
 
-        <form onSubmit={handleSubmit} className="project-form">
+        <form onSubmit={handleSubmit} className="task-form">
           {/* NAME */}
           <div className="form-row">
-            <label>Project Name *</label>
+            <label>Task Name *</label>
             <input
               type="text"
               name="name"
@@ -125,48 +127,68 @@ export default function NewProject() {
               rows={4}
               value={form.description}
               onChange={handleChange}
-              placeholder="Describe the project..."
+              placeholder="Describe the task..."
             />
           </div>
 
-          {/* DATES */}
+          {/* GRID */}
           <div className="form-grid">
             <div className="form-row">
-              <label>Start Date</label>
-              <input
-                type="date"
-                name="startDate"
-                value={form.startDate}
+              <label>Status</label>
+              <select
+                name="status"
+                value={form.status}
                 onChange={handleChange}
-              />
+                className={`status-select status-${form.status.toLowerCase()}`}
+              >
+                <option value="TODO">To do</option>
+                <option value="INPROGRESS">In Progress</option>
+                <option value="COMPLETE">Complete</option>
+                <option value="HOLD">HOLD</option>
+                <option value="QAINPROGRESS">Qa in progress</option>
+                <option value="QACOMPLETE">Qa complete</option>
+                <option value="QCINPROGRESS">Qc in progress</option>
+                <option value="QCCOMPLETE">Qc complete</option>
+
+              </select>
             </div>
 
             <div className="form-row">
-              <label>Due Date *</label>
+              <label>Priority</label>
+              <select
+                name="priority"
+                value={form.priority}
+                onChange={handleChange}
+              >
+                <option value="HIGH">HIGH</option>
+                <option value="MEDIUM">MEDIUM</option>
+                <option value="LOW">LOW</option>
+              </select>
+            </div>
+          </div>
+
+          {/* OPTIONAL */}
+          <div className="form-grid">
+            <div className="form-row">
+              <label>Due Date</label>
               <input
                 type="date"
                 name="dueDate"
                 value={form.dueDate}
                 onChange={handleChange}
-                required
               />
             </div>
-          </div>
 
-          {/* STATUS */}
-          <div className="form-row">
-            <label>Status</label>
-            <select
-              name="status"
-              value={form.status}
-              onChange={handleChange}
-            >
-              <option value="TODO">TODO</option>
-              <option value="INPROGRESS">IN PROGRESS</option>
-              <option value="TESTING">TESTING</option>
-              <option value="DELIVERD">DELIVERED</option>
-              <option value="HOLD">HOLD</option>
-            </select>
+            <div className="form-row">
+              <label>Assign To (User ID)</label>
+              <input
+                type="text"
+                name="assignedTo"
+                value={form.assignedTo}
+                onChange={handleChange}
+                placeholder="Optional"
+              />
+            </div>
           </div>
 
           {/* ATTACHMENTS */}
@@ -194,10 +216,20 @@ export default function NewProject() {
             </label>
           </div>
 
-          {/* SUBMIT */}
-          <button className="submit-btn" disabled={loading}>
-            {loading ? "Creating..." : "Create Project"}
-          </button>
+          {/* ACTIONS */}
+          <div className="action-row">
+            <button
+              type="button"
+              className="cancel-btn"
+              onClick={() => navigate(-1)}
+            >
+              Cancel
+            </button>
+
+            <button className="submit-btn" disabled={loading}>
+              {loading ? "Creating..." : "Create Task"}
+            </button>
+          </div>
         </form>
       </div>
     </div>

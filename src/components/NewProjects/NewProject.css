@@ -1,17 +1,84 @@
-.new-project-container {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f5f5f5;
-    padding: 20px;
-  }
-  
-  .project-card {
-    width: 100%;
-    max-width: 600px;
-    padding: 25px;
-    border-radius: 10px;
-    border: none;
-  }
-  
+.new-project-page {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.new-project-page h2 {
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.project-form {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.form-row label {
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.form-row input,
+.form-row textarea,
+.form-row select {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.form-row textarea {
+  resize: vertical;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.attachment-list {
+  margin-bottom: 10px;
+}
+
+.attachment-item {
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.attach-btn {
+  display: inline-block;
+  color: #0052cc;
+  cursor: pointer;
+  font-weight: 500;
+  margin-top: 6px;
+}
+
+.attach-btn:hover {
+  text-decoration: underline;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background: #000000;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

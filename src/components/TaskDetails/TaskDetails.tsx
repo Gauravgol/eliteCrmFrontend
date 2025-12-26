@@ -303,13 +303,18 @@ export default function TaskDetails() {
           <div className="info-row">
             <label>Status</label>
             <select
+             className={`status-select status-${task.status.toLowerCase()}`}
               value={task.status}
               onChange={(e) => updateTaskField({ status: e.target.value })}
             >
-              <option value="TODO">TODO</option>
-              <option value="INPROGRESS">IN PROGRESS</option>
-              <option value="DONE">DONE</option>
-              <option value="HOLD">HOLD</option>
+               <option value="TODO">To do</option>
+                <option value="INPROGRESS">In Progress</option>
+                <option value="COMPLETE">Complete</option>
+                <option value="HOLD">HOLD</option>
+                <option value="QAINPROGRESS">Qa in progress</option>
+                <option value="QACOMPLETE">Qa complete</option>
+                <option value="QCINPROGRESS">Qc in progress</option>
+                <option value="QCCOMPLETE">Qc complete</option>
             </select>
           </div>
 

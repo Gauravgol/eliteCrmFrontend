@@ -131,7 +131,7 @@ export default function ProjectDetails() {
         <div className="tasks-section">
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <h5>Tasks</h5>
-            <button className="btn-primary">+ New Task</button>
+            <button className="btn-primary" onClick={()=>navigate(`/projects/${projectId}/create-task`)}>+ New Task</button>
           </div>
 
           {tasks.map((t) => (

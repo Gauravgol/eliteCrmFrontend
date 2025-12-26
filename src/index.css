@@ -71,3 +71,90 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+/* =========================================================
+   STATUS DROPDOWN (Jira / Notion Style)
+========================================================= */
+
+.status-select {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  appearance: none;
+  transition: all 0.2s ease;
+}
+
+.status-select:hover {
+  filter: brightness(0.95);
+}
+
+.status-select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
+}
+
+/* ---- Selected State Colors ---- */
+
+.status-todo {
+  background: #f1f3f5;
+  color: #495057;
+  border-color: #ced4da;
+}
+
+.status-inprogress {
+  background: #e7f1ff;
+  color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.status-complete {
+  background: #e6f4ea;
+  color: #198754;
+  border-color: #198754;
+}
+
+.status-hold {
+  background: #fdecea;
+  color: #dc3545;
+  border-color: #dc3545;
+}
+
+.status-qainprogress {
+  background: #fff4e6;
+  color: #fd7e14;
+  border-color: #fd7e14;
+}
+
+.status-qacomplete {
+  background: #e6fffa;
+  color: #20c997;
+  border-color: #20c997;
+}
+
+.status-qcinprogress {
+  background: #f3e8ff;
+  color: #6f42c1;
+  border-color: #6f42c1;
+}
+
+.status-qccomplete {
+  background: #e6f4ea;
+  color: #146c43;
+  border-color: #146c43;
+}
+
+
+/* =========================================================
+   DROPDOWN OPTION COLORS (Best Effort – Browser Limited)
+========================================================= */
+
+.status-select option[value="TODO"] { color: #495057; }
+.status-select option[value="INPROGRESS"] { color: #0d6efd; }
+.status-select option[value="COMPLETE"] { color: #198754; }
+.status-select option[value="HOLD"] { color: #dc3545; }
+.status-select option[value="QAINPROGRESS"] { color: #fd7e14; }
+.status-select option[value="QACOMPLETE"] { color: #20c997; }
+.status-select option[value="QCINPROGRESS"] { color: #6f42c1; }
+.status-select option[value="QCCOMPLETE"] { color: #146c43; }
