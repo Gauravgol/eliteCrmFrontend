@@ -1,0 +1,152 @@
+/* ================= HEADER ================= */
+
+.users-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .muted {
+    color: #666;
+    font-size: 14px;
+  }
+  
+  .create-btn,
+  .btn-black {
+    background: #000;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  /* ================= FILTERS ================= */
+  
+  .users-filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  
+  .users-filters input,
+  .users-filters select {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  
+  /* ================= USERS LIST ================= */
+  
+  .users-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 8px;
+  }
+  
+  .user-row {
+    display: grid;
+    grid-template-columns: 60px 2fr 1fr;
+    gap: 12px;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    align-items: center;
+  }
+  
+  .user-row:last-child {
+    border-bottom: none;
+  }
+  
+  .avatar-placeholder {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #000;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+  
+  .avatar-placeholder img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .user-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .role-badge {
+    text-transform: capitalize;
+    font-weight: 600;
+  }
+  
+  /* ================= PAGINATION ================= */
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  
+  /* ================= MODAL OVERLAY ================= */
+  
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2147483647;
+  }
+  
+  /* ================= MODAL CONTENT ================= */
+  
+  .user-modal {
+    background: #fff;
+    color: #111;
+    width: 540px;
+    max-width: calc(100vw - 40px);
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  }
+  
+  /* ================= MODAL GRID ================= */
+  
+  .modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  
+  .full-width {
+    grid-column: 1 / -1;
+  }
+  
+  .modal-grid input,
+  .modal-grid select {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  
+  /* ================= MODAL ACTIONS ================= */
+  
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  

@@ -10,6 +10,7 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import ProjectDetails from "./components/ProjectDetails/ProjectDetails";
 import TaskDetails from "./components/TaskDetails/TaskDetails";
 import NewTask from "./components/NewTask/NewTask";
+import Users from "./components/Users/Users";
 
 function App() {
   const isLoggedIn = !!localStorage.getItem("token");
@@ -32,6 +33,7 @@ function App() {
                 <Route path="projects/:projectId" element={<ProjectDetails />} />
                 <Route path="task/:taskId" element={<TaskDetails />} />
                 <Route path="/projects/:projectId/create-task" element={<NewTask />} />
+                <Route path="/users" element={<Users />} />
 
               </Routes>
             </>

@@ -12,6 +12,7 @@
     z-index: 900;
     display: flex;
     flex-direction: column;
+    z-index: 1000;
   }
   
   /* Menu List */

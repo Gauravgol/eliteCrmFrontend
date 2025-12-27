@@ -9,6 +9,7 @@ export default function Sidebar() {
         <li onClick={()=>navigate("/dashboard")}>📊 Dashboard</li>
         <li >📝 Tasks</li>
         <li onClick={()=>navigate("/projects")}>📁 Projects</li>
+        <li onClick={()=>navigate("/users")}>📁 Users</li>
       </ul>
     </div>
   );
