@@ -38,6 +38,7 @@ export default function Login() {
         
       localStorage.setItem("token", apiResponseData.token);
       localStorage.setItem("user", JSON.stringify(apiResponseData.user));
+      console.log("Hi")
       navigate("/dashboard");
       } else {
         toast.error(responseMessage || "Login failed");

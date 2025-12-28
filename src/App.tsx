@@ -77,12 +77,11 @@ const Layout = () => {
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
+
   useEffect(() => {
-    setIsLoggedIn(!!localStorage.getItem("token"));
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
   }, []);
-
-  if (isLoggedIn === null) return null; // prevent early redirect
-
 
   return (
     <Routes>
