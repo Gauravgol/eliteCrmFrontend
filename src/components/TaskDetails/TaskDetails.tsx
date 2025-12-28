@@ -55,10 +55,18 @@ export default function TaskDetails() {
 
   /* ---------------- HELPERS ---------------- */
 
-  const getFileName = (url?: string) => {
-    if (!url) return "";
-    const name = url.split("/").pop() || "";
-    return name.split("_").slice(2).join("_");
+  const getFileName = (url: string) => {
+   
+      const file = url.split("/").pop();
+      if (!file) return "";
+    
+      const parts = file.split("_");
+     
+      if (parts.length > 1) {
+        return parts.slice(1).join("_");
+      }
+    return
+    
   };
 
   /* ---------------- UPDATE TASK ---------------- */

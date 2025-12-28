@@ -113,8 +113,17 @@ export default function ProjectDetails() {
     setUploading(false);
   };
 
-  const fileName = (url: string) =>
-    url.split("/").pop()?.split("_").slice(2).join("_");
+  const fileName = (url: string) =>{
+    const file = url.split("/").pop(); // 1766939202757_images.jfif
+    if (!file) return "";
+  
+    const parts = file.split("_");
+   
+    if (parts.length > 1) {
+      return parts.slice(1).join("_");
+    }
+  return
+  }
 
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">{error}</div>;
