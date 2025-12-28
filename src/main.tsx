@@ -8,7 +8,7 @@ import './index.css'
 import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+
     <BrowserRouter>
       <App />
       <ToastContainer
@@ -21,5 +21,5 @@ createRoot(document.getElementById('root')!).render(
       theme="light"
     />
     </BrowserRouter>
-  </StrictMode>
+
 )
