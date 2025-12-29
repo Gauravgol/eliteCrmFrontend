@@ -49,8 +49,7 @@
 // export default App;
 
 
-import { Routes, Route, Navigate, Outlet } from "react-router-dom";
-// import { useEffect, useState } from "react";
+import { Routes, Route, Outlet } from "react-router-dom";
 import "./App.css";
 
 import Login from "./components/Login/Login";
@@ -64,6 +63,8 @@ import TaskDetails from "./components/TaskDetails/TaskDetails";
 import NewTask from "./components/NewTask/NewTask";
 import Users from "./components/Users/Users";
 
+import ProtectedRoute from "./ProtectedRoute";
+
 const Layout = () => {
   return (
     <>
@@ -75,22 +76,25 @@ const Layout = () => {
 };
 
 function App() {
-  const isLoggedIn = !!localStorage.getItem("token");
-
   return (
     <Routes>
+      {/* Public Route */}
       <Route path="/" element={<Login />} />
 
-      <Route
-        element={isLoggedIn ? <Layout /> : <Navigate to="/" replace />}
-      >
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="projects" element={<Projects />} />
-        <Route path="projects/new" element={<NewProject />} />
-        <Route path="projects/:projectId" element={<ProjectDetails />} />
-        <Route path="projects/:projectId/create-task" element={<NewTask />} />
-        <Route path="task/:taskId" element={<TaskDetails />} />
-        <Route path="users" element={<Users />} />
+      {/* Protected Routes */}
+      <Route element={<ProtectedRoute />}>
+        <Route element={<Layout />}>
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="projects" element={<Projects />} />
+          <Route path="projects/new" element={<NewProject />} />
+          <Route path="projects/:projectId" element={<ProjectDetails />} />
+          <Route
+            path="projects/:projectId/create-task"
+            element={<NewTask />}
+          />
+          <Route path="task/:taskId" element={<TaskDetails />} />
+          <Route path="users" element={<Users />} />
+        </Route>
       </Route>
     </Routes>
   );
