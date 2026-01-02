@@ -288,3 +288,42 @@
   color: #888;
   white-space: nowrap;
 }
+
+/* ===== MENTION ===== */
+
+.comment-mention-wrapper {
+  position: relative;
+}
+
+.mention-dropdown {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  width: 220px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  list-style: none;
+  padding: 4px 0;
+  max-height: 160px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.mention-dropdown li {
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.mention-dropdown li:hover {
+  background: #f0f4ff;
+}
+
+.mention {
+  background: #e7f1ff;
+  color: #0d6efd;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-weight: 600;
+}

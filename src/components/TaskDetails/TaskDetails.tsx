@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import "./TaskDetails.css";
 import { generateUrn } from "../../utils/generateUrn";
 import { toast } from "react-toastify";
+import moment from "moment-timezone";
+
 
 export default function TaskDetails() {
   const { taskId } = useParams<{ taskId: string }>();
@@ -25,8 +27,39 @@ export default function TaskDetails() {
   const [updating, setUpdating] = useState(false);
   const [uploading, setUploading] = useState(false);
 
+  // Assign states
+const [assignedUser, setAssignedUser] = useState<any>(null);
+const [assignSearch, setAssignSearch] = useState("");
+const [assignList, setAssignList] = useState<any[]>([]);
+const [showAssignList, setShowAssignList] = useState(false);
+const assignRef = useRef<HTMLDivElement>(null);
+
+// @mention states (ADD)
+const [mentionSearch, setMentionSearch] = useState("");
+const [mentionList, setMentionList] = useState<any[]>([]);
+const [showMentionList, setShowMentionList] = useState(false);
+const commentRef = useRef<HTMLDivElement>(null);
+
+const fetchUsersForMention = async (search: string) => {
+  try {
+    const res = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/tagUser?search=${search}`,
+      { headers: { urn: generateUrn(13) } }
+    );
+    const json = await res.json();
+    setMentionList(json?.apiResponseData?.list || []);
+  } catch {
+    toast.error("Failed to load users");
+  }
+};
 
   /* ---------------- FETCH TASK ---------------- */
+
+  useEffect(() => {
+    if (task?.assignedTo) {
+      setAssignedUser(task.assignedTo);
+    }
+  }, [task]);
 
   useEffect(() => {
     if (!taskId) {
@@ -150,6 +183,51 @@ export default function TaskDetails() {
     } finally {
       setUploading(false);
     }
+  };
+  
+  const fetchUsersForAssign = async (search: string) => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/tagUser?search=${search}`,
+        { headers: { urn: generateUrn(13) } }
+      );
+      const json = await res.json();
+      setAssignList(json?.apiResponseData?.list || []);
+    } catch {
+      toast.error("Failed to load users");
+    }
+  };
+  
+  const handleAssignFocus = () => {
+    setShowAssignList(true);
+    fetchUsersForAssign("");
+  };
+  
+  const handleAssignChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setAssignSearch(value);
+    setShowAssignList(true);
+    fetchUsersForAssign(value);
+  };
+  
+  const selectAssignedUser = async (u: any) => {
+    setAssignedUser(u);
+    setShowAssignList(false);
+  
+    await updateTaskField({
+      assignedTo: u._id,
+    });
+  };
+  
+  const clearAssignedUser = async () => {
+    setAssignedUser(null);
+    setAssignSearch("");
+    setAssignList([]);
+    setShowAssignList(false);
+  
+    await updateTaskField({
+      assignedTo: null,
+    });
   };
   
 
@@ -276,17 +354,74 @@ export default function TaskDetails() {
                 task.comments.map((c: any) => (
                   <div key={c._id} className="comment">
                     <strong>{c.commenterName}</strong>
-                    <p>{c.comment}</p>
+                    <span className="comment-time">
+    {moment
+        .utc(c.commentedAt)
+        .tz("Asia/Kolkata")
+        .format("DD MMM YYYY, hh:mm A")}
+    </span>
+                    <p
+  dangerouslySetInnerHTML={{
+    __html: c.comment.replace(
+      /@(\w+)/g,
+      `<span class="mention">@$1</span>`
+    ),
+  }}
+/>
                   </div>
                 ))
               )}
 
-              <textarea
+              {/* <textarea
                 className="comment-box"
                 placeholder="Write a comment…"
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
-              />
+              /> */}
+              <div className="comment-mention-wrapper" ref={commentRef}>
+  <textarea
+    className="comment-box"
+    placeholder="Write a comment… use @ to mention"
+    value={commentText}
+    onChange={(e) => {
+      const value = e.target.value;
+      setCommentText(value);
+
+      const cursor = e.target.selectionStart;
+      const textBeforeCursor = value.slice(0, cursor);
+      const match = textBeforeCursor.match(/@(\w*)$/);
+
+      if (match) {
+        setMentionSearch(match[1]);
+        setShowMentionList(true);
+        fetchUsersForMention(match[1]);
+      } else {
+        setShowMentionList(false);
+      }
+    }}
+  />
+
+  {showMentionList && mentionList.length > 0 && (
+    <ul className="mention-dropdown">
+      {mentionList.map((u) => (
+        <li
+          key={u._id}
+          onClick={() => {
+            const updatedText = commentText.replace(
+              /@(\w*)$/,
+              `@${u.name} `
+            );
+            setCommentText(updatedText);
+            setShowMentionList(false);
+          }}
+        >
+          @{u.name}
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+
 
               <button
                 className="comment-btn"
@@ -338,6 +473,61 @@ export default function TaskDetails() {
             </select>
           </div>
 
+          <div className="info-row assign-wrapper" ref={assignRef}>
+  <label>Assigned To</label>
+
+  <div
+    className="assign-inprogress"
+    onClick={() => {
+      if (assignedUser) {
+        setAssignedUser(null);
+        setAssignSearch("");
+        setShowAssignList(true);
+        fetchUsersForAssign("");
+      }
+    }}
+  >
+    {assignedUser && (
+      <span className="assign-chip">
+        {assignedUser.name}
+        <span
+          onClick={(e) => {
+            e.stopPropagation(); // VERY IMPORTANT
+            clearAssignedUser();
+          }}
+        >
+          
+        </span>
+      </span>
+    )}
+
+    {!assignedUser && (
+      <input
+        autoFocus
+        type="text"
+        placeholder="Assign user"
+        value={assignSearch}
+        onChange={handleAssignChange}
+        onFocus={handleAssignFocus}
+      />
+    )}
+  </div>
+
+  {showAssignList && assignList.length > 0 && (
+    <ul className="assign-dropdown">
+      {assignList.map((u) => (
+        <li
+          key={u._id}
+          onClick={() => selectAssignedUser(u)}
+        >
+          {u.name}
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+
+
           <div className="info-row">
             <label>Due Date</label>
             <input
@@ -351,3 +541,4 @@ export default function TaskDetails() {
     </div>
   );
 }
+

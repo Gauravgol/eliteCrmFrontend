@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./ProjectDetails.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { generateUrn } from "../../utils/generateUrn";
@@ -25,6 +25,11 @@ export default function ProjectDetails() {
 
   const [commentText, setCommentText] = useState("");
   const [uploading, setUploading] = useState(false);
+
+  const [mentionSearch, setMentionSearch] = useState("");
+  const [mentionList, setMentionList] = useState<any[]>([]);
+  const [showMentionList, setShowMentionList] = useState(false);
+  const commentRef = useRef<HTMLDivElement>(null);
 
   const USER_ID = "6939b329f8799ddbd5833664";
   const USER_NAME = "Gaurav";
@@ -125,6 +130,18 @@ export default function ProjectDetails() {
   return
   }
 
+  const fetchUsersForMention = async (search: string) => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/tagUser?search=${search}`,
+        { headers: { urn: generateUrn(13) } }
+      );
+      const json = await res.json();
+      setMentionList(json?.apiResponseData?.list || []);
+    } catch {
+      toast.error("Failed to load users");
+    }
+  };
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">{error}</div>;
   if (!project) return <div className="empty-state">Project not found</div>;
@@ -278,14 +295,65 @@ export default function ProjectDetails() {
         .format("DD MMM YYYY, hh:mm A")}
     </span>
   </div>
-                  <p>{c.comment}</p>
+                  {/* <p>{c.comment}</p> */}
+                  <p
+  dangerouslySetInnerHTML={{
+    __html: c.comment.replace(
+      /@(\w+)/g,
+      `<span class="mention">@$1</span>`
+    ),
+  }}
+/>
                 </div>
               ))}
-              <textarea
+              {/* <textarea
                 className="comment-box"
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
-              />
+              /> */}
+              <div className="comment-mention-wrapper" ref={commentRef}>
+  <textarea
+    className="comment-box"
+    value={commentText}
+    placeholder="Write a comment… Use @ to mention"
+    onChange={(e) => {
+      const value = e.target.value;
+      setCommentText(value);
+
+      const cursor = e.target.selectionStart;
+      const textBeforeCursor = value.slice(0, cursor);
+      const match = textBeforeCursor.match(/@(\w*)$/);
+
+      if (match) {
+        setMentionSearch(match[1]);
+        setShowMentionList(true);
+        fetchUsersForMention(match[1]);
+      } else {
+        setShowMentionList(false);
+      }
+    }}
+  />
+
+  {showMentionList && mentionList.length > 0 && (
+    <ul className="mention-dropdown">
+      {mentionList.map((u) => (
+        <li
+          key={u._id}
+          onClick={() => {
+            const updatedText = commentText.replace(
+              /@(\w*)$/,
+              `@${u.name} `
+            );
+            setCommentText(updatedText);
+            setShowMentionList(false);
+          }}
+        >
+          @{u.name}
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
               <button
                 className="comment-btn"
                 disabled={!commentText.trim()}
