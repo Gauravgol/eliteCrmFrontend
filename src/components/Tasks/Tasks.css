@@ -1,0 +1,187 @@
+/* HEADER */
+.tasks-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .tasks-header h2 {
+    margin: 0;
+    font-weight: 600;
+  }
+  
+  /* FILTERS */
+  .task-filters {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .task-filters input,
+  .task-filters select {
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    font-size: 14px;
+  }
+  
+  /* LIST */
+  .task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  /* ROW */
+  .task-row {
+    background: #fff;
+    padding: 14px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    transition: background 0.15s ease, box-shadow 0.15s ease;
+  
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .table-wrapper {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+  }
+  
+  .task-row:hover {
+    background: #f8f9fb;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  }
+  
+  /* LEFT */
+  .task-left {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .task-name {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  
+  .task-project {
+    font-size: 13px;
+    color: #666;
+    margin-top: 2px;
+  }
+  
+  /* RIGHT */
+  .task-right {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  
+  /* STATUS */
+  .status {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+  }
+  
+  .status.TODO {
+    background: #e3f2fd;
+    color: #1565c0;
+  }
+  
+  .status.INPROGRESS {
+    background: #fff3e0;
+    color: #ef6c00;
+  }
+  
+  .status.COMPLETE {
+    background: #e6f4ea;
+    color: #198754;
+  }
+  
+  .status.HOLD {
+    background: #fdecea;
+    color: #dc3545;
+  }
+  
+  /* PRIORITY */
+  .priority {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+  }
+  
+  .priority.HIGH {
+    background: #ffebee;
+    color: #c62828;
+  }
+  
+  .priority.MEDIUM {
+    background: #fff8e1;
+    color: #ef6c00;
+  }
+  
+  .priority.LOW {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+  
+  /* PAGINATION
+  .pagination {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .pagination button {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid #000;
+    background: #fff;
+    color: #000;
+    cursor: pointer;
+  }
+  
+  .pagination button.active {
+    background: #000;
+    color: #fff;
+  }
+  
+  .pagination button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  } */
+  
+  /* STATES */
+  .loading,
+  .empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+  }
+  
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .tasks-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+  
+    .task-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  
+    .task-right {
+      align-self: flex-start;
+    }
+  }
+  

@@ -78,6 +78,6 @@ const getIcon = (path: string) => {
   if (path.includes("dashboard")) return <FaTachometerAlt />;
   if (path.includes("projects")) return <FaFolderOpen />;
   if (path.includes("users")) return <FaUsers />;
-  if (path.includes("task")) return <FaTasks />;
+  if (path.includes("tasks")) return <FaTasks />;
   return <FaFolderOpen />;
 };

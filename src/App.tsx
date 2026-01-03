@@ -64,6 +64,7 @@ import NewTask from "./components/NewTask/NewTask";
 import Users from "./components/Users/Users";
 
 import ProtectedRoute from "./ProtectedRoute";
+import Tasks from "./components/Tasks/Tasks";
 
 const Layout = () => {
   return (
@@ -94,6 +95,8 @@ function App() {
           />
           <Route path="task/:taskId" element={<TaskDetails />} />
           <Route path="users" element={<Users />} />
+          <Route path="tasks" element={<Tasks />} />
+
         </Route>
       </Route>
     </Routes>

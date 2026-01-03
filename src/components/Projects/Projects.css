@@ -45,49 +45,7 @@
     color: #2e7d32;
   }
   
-  /* Pagination */
-  .pagination-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 15px;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  
-  .items-per-page {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  
-  .pagination-controls {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  
-  .pagination-controls button {
-    padding: 5px 10px;
-    border: 1px solid #000;
-    background: #fff;
-    cursor: pointer;
-  }
-  
-  .pagination-controls button.active {
-    background: #000;
-    color: #fff;
-  }
-  
-  .pagination-controls button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-  
-  .pagination-controls .dots {
-    padding: 0 6px;
-  }
-  
+
   /* ================= RESPONSIVE ================= */
   
   /* Mobile adjustments */

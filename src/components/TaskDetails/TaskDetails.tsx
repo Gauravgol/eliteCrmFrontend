@@ -28,36 +28,37 @@ export default function TaskDetails() {
   const [uploading, setUploading] = useState(false);
 
   // Assign states
-const [assignedUser, setAssignedUser] = useState<any>(null);
-const [assignSearch, setAssignSearch] = useState("");
-const [assignList, setAssignList] = useState<any[]>([]);
-const [showAssignList, setShowAssignList] = useState(false);
-const assignRef = useRef<HTMLDivElement>(null);
+  const [assignedUser, setAssignedUser] = useState<any>(null);
+  const [assignSearch, setAssignSearch] = useState("");
+  const [assignList, setAssignList] = useState<any[]>([]);
+  const [showAssignList, setShowAssignList] = useState(false);
+  const assignRef = useRef<HTMLDivElement>(null);
 
-// @mention states (ADD)
-const [mentionSearch, setMentionSearch] = useState("");
-const [mentionList, setMentionList] = useState<any[]>([]);
-const [showMentionList, setShowMentionList] = useState(false);
-const commentRef = useRef<HTMLDivElement>(null);
+  // @mention states (ADD)
+  const [mentionSearch, setMentionSearch] = useState("");
+  const [mentionList, setMentionList] = useState<any[]>([]);
+  const [showMentionList, setShowMentionList] = useState(false);
+  const commentRef = useRef<HTMLDivElement>(null);
 
-const fetchUsersForMention = async (search: string) => {
-  try {
-    const res = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/tagUser?search=${search}`,
-      { headers: { urn: generateUrn(13) } }
-    );
-    const json = await res.json();
-    setMentionList(json?.apiResponseData?.list || []);
-  } catch {
-    toast.error("Failed to load users");
-  }
-};
+  const fetchUsersForMention = async (search: string) => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/tagUser?search=${search}`,
+        { headers: { urn: generateUrn(13) } }
+      );
+      const json = await res.json();
+      setMentionList(json?.apiResponseData?.list || []);
+    } catch {
+      toast.error("Failed to load users");
+    }
+  };
 
   /* ---------------- FETCH TASK ---------------- */
 
   useEffect(() => {
     if (task?.assignedTo) {
       setAssignedUser(task.assignedTo);
+      setShowAssignList(false);
     }
   }, [task]);
 
@@ -89,17 +90,17 @@ const fetchUsersForMention = async (search: string) => {
   /* ---------------- HELPERS ---------------- */
 
   const getFileName = (url: string) => {
-   
-      const file = url.split("/").pop();
-      if (!file) return "";
-    
-      const parts = file.split("_");
-     
-      if (parts.length > 1) {
-        return parts.slice(1).join("_");
-      }
+
+    const file = url.split("/").pop();
+    if (!file) return "";
+
+    const parts = file.split("_");
+
+    if (parts.length > 1) {
+      return parts.slice(1).join("_");
+    }
     return
-    
+
   };
 
   /* ---------------- UPDATE TASK ---------------- */
@@ -140,25 +141,25 @@ const fetchUsersForMention = async (search: string) => {
 
     if (!files || files.length === 0) return;
 
-  const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+    const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 
-  for (const file of Array.from(files)) {
-    if (file.size > MAX_SIZE) {
-      toast.error(`"${file.name}" exceeds 5MB limit`);
-      return;
+    for (const file of Array.from(files)) {
+      if (file.size > MAX_SIZE) {
+        toast.error(`"${file.name}" exceeds 5MB limit`);
+        return;
+      }
     }
-  }
-  
+
     try {
       setUploading(true);
-  
+
       const formData = new FormData();
       formData.append("taskId", taskId!);
-  
+
       Array.from(files).forEach((file) => {
         formData.append("attachments", file);
       });
-  
+
       const res = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/updateTask`,
         {
@@ -169,13 +170,13 @@ const fetchUsersForMention = async (search: string) => {
           body: formData,
         }
       );
-  
+
       const json = await res.json();
-  
+
       if (json?.responseCode !== "200") {
         throw new Error("Upload failed");
       }
-  
+
       // 🔥 Refresh from backend
       await fetchTask();
     } catch {
@@ -184,7 +185,7 @@ const fetchUsersForMention = async (search: string) => {
       setUploading(false);
     }
   };
-  
+
   const fetchUsersForAssign = async (search: string) => {
     try {
       const res = await fetch(
@@ -197,39 +198,39 @@ const fetchUsersForMention = async (search: string) => {
       toast.error("Failed to load users");
     }
   };
-  
+
   const handleAssignFocus = () => {
     setShowAssignList(true);
     fetchUsersForAssign("");
   };
-  
+
   const handleAssignChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setAssignSearch(value);
     setShowAssignList(true);
     fetchUsersForAssign(value);
   };
-  
+
   const selectAssignedUser = async (u: any) => {
     setAssignedUser(u);
     setShowAssignList(false);
-  
+
     await updateTaskField({
       assignedTo: u._id,
     });
   };
-  
+
   const clearAssignedUser = async () => {
     setAssignedUser(null);
     setAssignSearch("");
     setAssignList([]);
     setShowAssignList(false);
-  
+
     await updateTaskField({
       assignedTo: null,
     });
   };
-  
+
 
   /* ---------------- UI STATES ---------------- */
 
@@ -299,47 +300,47 @@ const fetchUsersForMention = async (search: string) => {
 
           {/* ATTACHMENTS */}
           <div
-  className="section-header"
-  onClick={() => setShowAttachments(!showAttachments)}
->
-  <span>{showAttachments ? "▾" : "▸"} Attachments</span>
-</div>
+            className="section-header"
+            onClick={() => setShowAttachments(!showAttachments)}
+          >
+            <span>{showAttachments ? "▾" : "▸"} Attachments</span>
+          </div>
 
-{showAttachments && (
-  <>
-    {(task.attachments || []).length === 0 ? (
-      <p className="muted">No attachments</p>
-    ) : (
-      (task.attachments || []).map((att: any) => (
-        <div key={att._id} className="attachment">
-          📎
-          <a
-  href={att.url}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="attachment-link"
->
-  <span className="attachment-icon">
-    {att.url.endsWith(".pdf") ? "📄" : "🖼️"}
-  </span>
-  {getFileName(att.url)}
-</a>
-        </div>
-      ))
-    )}
+          {showAttachments && (
+            <>
+              {(task.attachments || []).length === 0 ? (
+                <p className="muted">No attachments</p>
+              ) : (
+                (task.attachments || []).map((att: any) => (
+                  <div key={att._id} className="attachment">
+                    📎
+                    <a
+                      href={att.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="attachment-link"
+                    >
+                      <span className="attachment-icon">
+                        {att.url.endsWith(".pdf") ? "📄" : "🖼️"}
+                      </span>
+                      {getFileName(att.url)}
+                    </a>
+                  </div>
+                ))
+              )}
 
-    {/* ADD ATTACHMENT */}
-    <label className="attach-btn">
-      {uploading ? "Uploading..." : "+ Add attachment"}
-      <input
-        type="file"
-        multiple
-        hidden
-        onChange={(e) => uploadAttachments(e.target.files)}
-      />
-    </label>
-  </>
-)}
+              {/* ADD ATTACHMENT */}
+              <label className="attach-btn">
+                {uploading ? "Uploading..." : "+ Add attachment"}
+                <input
+                  type="file"
+                  multiple
+                  hidden
+                  onChange={(e) => uploadAttachments(e.target.files)}
+                />
+              </label>
+            </>
+          )}
 
           {/* COMMENTS */}
           <div className="section-header" onClick={() => setShowComments(!showComments)}>
@@ -355,19 +356,19 @@ const fetchUsersForMention = async (search: string) => {
                   <div key={c._id} className="comment">
                     <strong>{c.commenterName}</strong>
                     <span className="comment-time">
-    {moment
-        .utc(c.commentedAt)
-        .tz("Asia/Kolkata")
-        .format("DD MMM YYYY, hh:mm A")}
-    </span>
+                      {moment
+                        .utc(c.commentedAt)
+                        .tz("Asia/Kolkata")
+                        .format("DD MMM YYYY, hh:mm A")}
+                    </span>
                     <p
-  dangerouslySetInnerHTML={{
-    __html: c.comment.replace(
-      /@(\w+)/g,
-      `<span class="mention">@$1</span>`
-    ),
-  }}
-/>
+                      dangerouslySetInnerHTML={{
+                        __html: c.comment.replace(
+                          /@(\w+)/g,
+                          `<span class="mention">@$1</span>`
+                        ),
+                      }}
+                    />
                   </div>
                 ))
               )}
@@ -379,48 +380,48 @@ const fetchUsersForMention = async (search: string) => {
                 onChange={(e) => setCommentText(e.target.value)}
               /> */}
               <div className="comment-mention-wrapper" ref={commentRef}>
-  <textarea
-    className="comment-box"
-    placeholder="Write a comment… use @ to mention"
-    value={commentText}
-    onChange={(e) => {
-      const value = e.target.value;
-      setCommentText(value);
+                <textarea
+                  className="comment-box"
+                  placeholder="Write a comment… use @ to mention"
+                  value={commentText}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setCommentText(value);
 
-      const cursor = e.target.selectionStart;
-      const textBeforeCursor = value.slice(0, cursor);
-      const match = textBeforeCursor.match(/@(\w*)$/);
+                    const cursor = e.target.selectionStart;
+                    const textBeforeCursor = value.slice(0, cursor);
+                    const match = textBeforeCursor.match(/@(\w*)$/);
 
-      if (match) {
-        setMentionSearch(match[1]);
-        setShowMentionList(true);
-        fetchUsersForMention(match[1]);
-      } else {
-        setShowMentionList(false);
-      }
-    }}
-  />
+                    if (match) {
+                      setMentionSearch(match[1]);
+                      setShowMentionList(true);
+                      fetchUsersForMention(match[1]);
+                    } else {
+                      setShowMentionList(false);
+                    }
+                  }}
+                />
 
-  {showMentionList && mentionList.length > 0 && (
-    <ul className="mention-dropdown">
-      {mentionList.map((u) => (
-        <li
-          key={u._id}
-          onClick={() => {
-            const updatedText = commentText.replace(
-              /@(\w*)$/,
-              `@${u.name} `
-            );
-            setCommentText(updatedText);
-            setShowMentionList(false);
-          }}
-        >
-          @{u.name}
-        </li>
-      ))}
-    </ul>
-  )}
-</div>
+                {showMentionList && mentionList.length > 0 && (
+                  <ul className="mention-dropdown">
+                    {mentionList.map((u) => (
+                      <li
+                        key={u._id}
+                        onClick={() => {
+                          const updatedText = commentText.replace(
+                            /@(\w*)$/,
+                            `@${u.name} `
+                          );
+                          setCommentText(updatedText);
+                          setShowMentionList(false);
+                        }}
+                      >
+                        @{u.name}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
 
 
               <button
@@ -446,18 +447,18 @@ const fetchUsersForMention = async (search: string) => {
           <div className="info-row">
             <label>Status</label>
             <select
-             className={`status-select status-${task.status.toLowerCase()}`}
+              className={`status-select status-${task.status.toLowerCase()}`}
               value={task.status}
               onChange={(e) => updateTaskField({ status: e.target.value })}
             >
-               <option value="TODO">To do</option>
-                <option value="INPROGRESS">In Progress</option>
-                <option value="COMPLETE">Complete</option>
-                <option value="HOLD">HOLD</option>
-                <option value="QAINPROGRESS">Qa in progress</option>
-                <option value="QACOMPLETE">Qa complete</option>
-                <option value="QCINPROGRESS">Qc in progress</option>
-                <option value="QCCOMPLETE">Qc complete</option>
+              <option value="TODO">To do</option>
+              <option value="INPROGRESS">In Progress</option>
+              <option value="COMPLETE">Complete</option>
+              <option value="HOLD">HOLD</option>
+              <option value="QAINPROGRESS">Qa in progress</option>
+              <option value="QACOMPLETE">Qa complete</option>
+              <option value="QCINPROGRESS">Qc in progress</option>
+              <option value="QCCOMPLETE">Qc complete</option>
             </select>
           </div>
 
@@ -474,58 +475,58 @@ const fetchUsersForMention = async (search: string) => {
           </div>
 
           <div className="info-row assign-wrapper" ref={assignRef}>
-  <label>Assigned To</label>
+            <label>Assigned To</label>
 
-  <div
-    className="assign-inprogress"
-    onClick={() => {
-      if (assignedUser) {
-        setAssignedUser(null);
-        setAssignSearch("");
-        setShowAssignList(true);
-        fetchUsersForAssign("");
-      }
-    }}
-  >
-    {assignedUser && (
-      <span className="assign-chip">
-        {assignedUser.name}
-        <span
-          onClick={(e) => {
-            e.stopPropagation(); // VERY IMPORTANT
-            clearAssignedUser();
-          }}
-        >
-          
-        </span>
-      </span>
-    )}
+            <div
+              className="assign-inprogress"
+              onClick={() => {
+                if (assignedUser) {
+                  setAssignedUser(null);
+                  setAssignSearch("");
+                  setShowAssignList(true);
+                  fetchUsersForAssign("");
+                }
+              }}
+            >
+              {assignedUser && (
+                <span className="assign-chip">
+                  {assignedUser.name}
+                  <span
+                    onClick={(e) => {
+                      e.stopPropagation(); // VERY IMPORTANT
+                      clearAssignedUser();
+                    }}
+                  >
 
-    {!assignedUser && (
-      <input
-        autoFocus
-        type="text"
-        placeholder="Assign user"
-        value={assignSearch}
-        onChange={handleAssignChange}
-        onFocus={handleAssignFocus}
-      />
-    )}
-  </div>
+                  </span>
+                </span>
+              )}
 
-  {showAssignList && assignList.length > 0 && (
-    <ul className="assign-dropdown">
-      {assignList.map((u) => (
-        <li
-          key={u._id}
-          onClick={() => selectAssignedUser(u)}
-        >
-          {u.name}
-        </li>
-      ))}
-    </ul>
-  )}
-</div>
+              {!assignedUser && (
+                <input
+                  autoFocus
+                  type="text"
+                  placeholder="Assign user"
+                  value={assignSearch}
+                  onChange={handleAssignChange}
+                  onFocus={handleAssignFocus}
+                />
+              )}
+            </div>
+
+            {showAssignList && assignList.length > 0 && (
+              <ul className="assign-dropdown">
+                {assignList.map((u) => (
+                  <li
+                    key={u._id}
+                    onClick={() => selectAssignedUser(u)}
+                  >
+                    {u.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
 
 
           <div className="info-row">
