@@ -6,7 +6,8 @@ import {
   FaTachometerAlt,
   FaFolderOpen,
   FaUsers,
-  FaTasks
+  FaTasks,
+  FaComments
 } from "react-icons/fa";
 import "./Sidebar.css";
 
@@ -79,5 +80,6 @@ const getIcon = (path: string) => {
   if (path.includes("projects")) return <FaFolderOpen />;
   if (path.includes("users")) return <FaUsers />;
   if (path.includes("tasks")) return <FaTasks />;
+  if (path.includes("chat")) return <FaComments />;
   return <FaFolderOpen />;
 };
