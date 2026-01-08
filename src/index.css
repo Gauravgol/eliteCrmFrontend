@@ -52,10 +52,10 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 .page-container {
-  margin-top: 60px;        /* navbar height */
+  margin-top: 65px;        /* navbar height */
   margin-left: 250px;      /* sidebar width */
-  padding: 10px;
-  min-height: calc(100vh - 60px);
+  padding: 0px;
+  min-height: calc(100vh - 65px);
   background: #f8f9fa;
   transition: margin-left 0.2s ease;
 }

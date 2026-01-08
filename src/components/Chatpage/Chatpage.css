@@ -8,7 +8,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     display: grid;
     grid-template-columns: 300px 1fr;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 65px);
     overflow: hidden;
   }
   
@@ -19,6 +19,8 @@
     padding: 16px;
     display: flex;
     flex-direction: column;
+    height: 100%;              /* 👈 ADD */
+    overflow: hidden;          /* 👈 ADD */
   }
   
   .chat-sidebar h3 {
@@ -39,6 +41,7 @@
     padding: 0;
     margin: 0;
     overflow-y: auto;
+    flex:1;
   }
   
   .user-list li {
@@ -70,6 +73,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    overflow: hidden;
   }
   
   .chat-header {
@@ -136,12 +140,17 @@
   /* ================= INPUT ================= */
   
   .chat-input {
+    flex-shrink: 0;
     display: flex;
     gap: 10px;
     padding: 12px;
     border-top: 1px solid #eee;
-    align-items: center;
+    background: #fff;
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
   }
+  
   
   .chat-input input {
     flex: 1;
