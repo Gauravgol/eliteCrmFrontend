@@ -240,6 +240,7 @@ export default function TaskDetails() {
 
   return (
     <div className="page-container">
+              <div style={{ padding: "10px" }}>
       {/* ================= HEADER ================= */}
       <div className="task-header">
         <div>
@@ -538,6 +539,7 @@ export default function TaskDetails() {
             />
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

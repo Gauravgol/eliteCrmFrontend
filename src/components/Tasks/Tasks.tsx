@@ -84,6 +84,7 @@ export default function Tasks() {
 
     return (
         <div className="page-container">
+                    <div style={{ padding: "10px" }}>
             {/* HEADER */}
             <div className="tasks-header">
                 <div className="task-filters">
@@ -205,6 +206,7 @@ export default function Tasks() {
 
                 </>
             )}
+            </div>
             </div>
         </div>
     );

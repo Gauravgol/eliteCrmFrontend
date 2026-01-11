@@ -148,6 +148,7 @@ export default function ProjectDetails() {
 
   return (
     <div className="page-container">
+            <div style={{ padding: "10px" }}>
       <div className="project-header">
         <h2>{project.name}</h2>
       </div>
@@ -371,6 +372,7 @@ export default function ProjectDetails() {
             </>
           )}
         </div>
+      </div>
       </div>
     </div>
   );
