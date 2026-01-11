@@ -26,7 +26,7 @@ export default function ProjectDetails() {
   const [commentText, setCommentText] = useState("");
   const [uploading, setUploading] = useState(false);
 
-  const [mentionSearch, setMentionSearch] = useState("");
+  // const [mentionSearch, setMentionSearch] = useState("");
   const [mentionList, setMentionList] = useState<any[]>([]);
   const [showMentionList, setShowMentionList] = useState(false);
   const commentRef = useRef<HTMLDivElement>(null);
