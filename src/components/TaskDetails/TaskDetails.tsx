@@ -35,7 +35,7 @@ export default function TaskDetails() {
   const assignRef = useRef<HTMLDivElement>(null);
 
   // @mention states (ADD)
-  const [mentionSearch, setMentionSearch] = useState("");
+  // const [mentionSearch, setMentionSearch] = useState("");
   const [mentionList, setMentionList] = useState<any[]>([]);
   const [showMentionList, setShowMentionList] = useState(false);
   const commentRef = useRef<HTMLDivElement>(null);
@@ -394,7 +394,7 @@ export default function TaskDetails() {
                     const match = textBeforeCursor.match(/@(\w*)$/);
 
                     if (match) {
-                      setMentionSearch(match[1]);
+                      // setMentionSearch(match[1]);
                       setShowMentionList(true);
                       fetchUsersForMention(match[1]);
                     } else {

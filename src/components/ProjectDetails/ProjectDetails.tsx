@@ -326,7 +326,7 @@ export default function ProjectDetails() {
       const match = textBeforeCursor.match(/@(\w*)$/);
 
       if (match) {
-        setMentionSearch(match[1]);
+        // setMentionSearch(match[1]);
         setShowMentionList(true);
         fetchUsersForMention(match[1]);
       } else {

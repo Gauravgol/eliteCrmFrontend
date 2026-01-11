@@ -15,7 +15,7 @@ export default function Tasks() {
 
     // pagination
     const [page, setPage] = useState(1);
-    const [columnsPerRow, setColumnsPerRow] = useState(3);
+    // const [columnsPerRow, setColumnsPerRow] = useState(3);
     const [pagination, setPagination] = useState<any>({
         totalPages: 1,
     });
@@ -161,7 +161,7 @@ export default function Tasks() {
                                 <span>Items per page</span>
                                 <select
                                     value={pagination.pageSize || 10}
-                                    onChange={(e) => {
+                                    onChange={() => {
                                         setPage(1);
                                     }}
                                 >
