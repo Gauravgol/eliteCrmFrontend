@@ -31,6 +31,7 @@
   border-radius: 8px;
   position: relative;
   z-index: 1;
+  background: #fff;
 }
 
 /* Task Card */
@@ -146,9 +147,9 @@
   cursor: pointer;
   user-select: none;
   position: relative;
-  z-index: 2;               /* 🔥 FIX */
-  background: #fff;         /* 🔥 FIX */
-  padding: 4px 0;           /* 🔥 FIX */
+  z-index: 2;              
+  background: #fff;       
+  padding: 4px 0;          
 }
 
 .toggle-title:hover {
@@ -164,7 +165,7 @@
 .project-info .comment-box,
 .project-info .comment-btn {
   position: relative;
-  z-index: 1;               /* 🔥 FIX */
+  z-index: 1;              
 }
 
 /* Editable text */
@@ -404,3 +405,17 @@
   overflow: hidden;
   word-break: break-word;
 }
+
+/* ===== PROJECT DESCRIPTION CARD ===== */
+
+.project-details-left .task-desc {
+  background: #fff;          /* 🔥 background */
+  padding: 16px;             /* 🔥 spacing */
+  border-radius: 8px;        /* 🔥 rounded like task page */
+  border: 1px solid #e0e0e0; /* subtle border */
+
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+}
+

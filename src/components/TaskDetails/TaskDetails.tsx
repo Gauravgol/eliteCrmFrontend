@@ -308,40 +308,60 @@ export default function TaskDetails() {
           </div>
 
           {showAttachments && (
-            <>
-              {(task.attachments || []).length === 0 ? (
-                <p className="muted">No attachments</p>
-              ) : (
-                (task.attachments || []).map((att: any) => (
-                  <div key={att._id} className="attachment">
-                    📎
-                    <a
-                      href={att.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="attachment-link"
-                    >
-                      <span className="attachment-icon">
-                        {att.url.endsWith(".pdf") ? "📄" : "🖼️"}
-                      </span>
-                      {getFileName(att.url)}
-                    </a>
-                  </div>
-                ))
-              )}
+  <>
+    {(task.attachments || []).length === 0 ? (
+      <p className="muted">No attachments</p>
+    ) : (
+      <div className="attachments-grid">
+        {(task.attachments || []).map((a: any) => {
+          const isPdf = a.url.toLowerCase().endsWith(".pdf");
 
-              {/* ADD ATTACHMENT */}
-              <label className="attach-btn">
-                {uploading ? "Uploading..." : "+ Add attachment"}
-                <input
-                  type="file"
-                  multiple
-                  hidden
-                  onChange={(e) => uploadAttachments(e.target.files)}
-                />
-              </label>
-            </>
-          )}
+          return (
+            <a
+              key={a._id}
+              href={a.url}
+              target="_blank"
+              rel="noreferrer"
+              className="attachment-card"
+            >
+              {/* PREVIEW BOX */}
+              <div className="attachment-preview">
+                {isPdf ? (
+                 <div className="attachment-pdf">
+                 <i className="fa-solid fa-file-pdf pdf-fa-icon"></i>
+               </div>
+                ) : (
+                  <img
+                    src={a.url}
+                    alt={getFileName(a.url)}
+                    loading="lazy"
+                  />
+                )}
+              </div>
+
+              {/* FILE NAME BELOW BOX */}
+              <div className="attachment-name">
+                {getFileName(a.url)}
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    )}
+
+    {/* ADD ATTACHMENT */}
+    <label className="attach-btn">
+      {uploading ? "Uploading..." : "+ Add attachment"}
+      <input
+        type="file"
+        multiple
+        hidden
+        onChange={(e) => uploadAttachments(e.target.files)}
+      />
+    </label>
+  </>
+)}
+ 
 
           {/* COMMENTS */}
           <div className="section-header" onClick={() => setShowComments(!showComments)}>
