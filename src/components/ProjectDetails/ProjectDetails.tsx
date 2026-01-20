@@ -801,6 +801,10 @@ export default function ProjectDetails() {
               <label>Owner</label>
               <span>{project.owner?.name}</span>
             </div>
+            <div className="info-row">
+              <label>CreatedBy</label>
+              <span>{project.createdBy?.name}</span>
+            </div>
 
             <div className="info-row">
               <label>Start</label>

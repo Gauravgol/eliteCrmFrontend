@@ -1,51 +1,108 @@
+
+// import { useEffect, useState } from "react";
+// import axios from "axios";
 // import "./Dashboard.css";
 
 // export default function Dashboard() {
-//   // Static user data (API later)
-//   const user = {
-//     name: "John Doe",
-//     email: "gaurav@gmail.com",
-//     role: "Client",
-//     profilePic: "https://i.pravatar.cc/150?img=3",
+//   const userFromStorage = JSON.parse(localStorage.getItem("user") || "{}");
+//   const token = localStorage.getItem("token");
+
+//   const [user, setUser] = useState<any>(null);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState("");
+
+//   useEffect(() => {
+//     if (!userFromStorage?.id) {
+//       setError("User not found");
+//       setLoading(false);
+//       return;
+//     }
+
+//     fetchUserInfo();
+//   }, []);
+
+//   const fetchUserInfo = async () => {
+//     try {
+//       setLoading(true);
+
+//       const res = await axios.get(
+//         `${import.meta.env.VITE_API_BASE_URL}/getUserInfo?userId=${userFromStorage?.id}`,
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+
+//       if (res.data?.responseCode === "200") {
+//         setUser(res.data.apiResponseData);
+//       } else {
+//         setError("Failed to load dashboard");
+//       }
+//     } catch (err) {
+//       setError("Something went wrong");
+//     } finally {
+//       setLoading(false);
+//     }
 //   };
 
-//   const stats = {
-//     assignedProjects: 8,
-//     assignedTasks: 21,
-//     completedProjects: 5,
-//   };
+//   if (loading) return <div className="loading">Loading dashboard...</div>;
+//   if (error) return <div className="error">{error}</div>;
+//   if (!user) return <div className="empty-state">No data found</div>;
 
 //   return (
 //     <div className="dashboard-container">
-
-//       {/* User Info Card */}
+//       {/* ================= USER CARD ================= */}
 //       <div className="user-card">
-//         <img src={user.profilePic} alt="Profile" />
+//         <img
+//           src={user.profilePic || "https://i.pravatar.cc/150?img=3"}
+//           alt="Profile"
+//         />
+
 //         <div className="user-info">
-//           <h3>{user.name}</h3>
-//           <p>{user.email}</p>
-//           <span className="role">{user.role}</span>
+//           <h3>{user.name || "-"}</h3>
+//           <p>{user.email || "-"}</p>
+//           {/* <span className="role">{user.role || "-"}</span> */}
+
+//           <div className="user-meta">
+//           {user.role && <div><strong>Role:</strong> {user.role}</div>}
+//             {user.phone && <div><strong>Phone:</strong> {user.phone}</div>}
+
+//             {user.address && (
+//               <div>
+//                 <strong>Address:</strong>{" "}
+//                 {[user.address.city, user.address.state, user.address.country]
+//                   .filter(Boolean)
+//                   .join(", ")}
+//               </div>
+//             )}
+
+//             {/* {user.createdAt && (
+//               <div>
+//                 <strong>Joined:</strong>{" "}
+//                 {new Date(user.createdAt).toDateString()}
+//               </div>
+//             )} */}
+//           </div>
 //         </div>
 //       </div>
 
-//       {/* Stats Section */}
+//       {/* ================= STATS ================= */}
 //       <div className="stats-grid">
-//         <div className="stat-card">
-//           <h5>Assigned Projects</h5>
-//           <p>{stats.assignedProjects}</p>
-//         </div>
+//         { user.role !== "employee" && (
+//           <div className="stat-card">
+//             <h5>Assigned Projects</h5>
+//             <p>{user.projectCount}</p>
+//           </div>
+//         )}
 
-//         <div className="stat-card">
-//           <h5>Assigned Tasks</h5>
-//           <p>{stats.assignedTasks}</p>
-//         </div>
-
-//         <div className="stat-card">
-//           <h5>Completed Projects</h5>
-//           <p>{stats.completedProjects}</p>
-//         </div>
+//         {typeof user.taskCount === "number" && (
+//           <div className="stat-card">
+//             <h5>Assigned Tasks</h5>
+//             <p>{user.taskCount}</p>
+//           </div>
+//         )}
 //       </div>
-
 //     </div>
 //   );
 // }
@@ -53,11 +110,18 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Dashboard.css";
 
+type DashboardData = {
+  tasks: Record<string, number>;
+  projects: Record<string, number>;
+  role: string;
+};
+
 export default function Dashboard() {
   const userFromStorage = JSON.parse(localStorage.getItem("user") || "{}");
   const token = localStorage.getItem("token");
 
   const [user, setUser] = useState<any>(null);
+  const [dashboard, setDashboard] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -68,31 +132,33 @@ export default function Dashboard() {
       return;
     }
 
-    fetchUserInfo();
+    Promise.all([fetchUserInfo(), fetchDashboardData()])
+      .catch(() => setError("Something went wrong"))
+      .finally(() => setLoading(false));
   }, []);
 
   const fetchUserInfo = async () => {
-    try {
-      setLoading(true);
+    const res = await axios.get(
+      `${import.meta.env.VITE_API_BASE_URL}/getUserInfo?userId=${userFromStorage.id}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    if (res.data?.responseCode == "200") {
+      setUser(res.data.apiResponseData);
+    }
+  };
 
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/getUserInfo?userId=${userFromStorage?.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (res.data?.responseCode === "200") {
-        setUser(res.data.apiResponseData);
-      } else {
-        setError("Failed to load dashboard");
+  const fetchDashboardData = async () => {
+    const res = await axios.get(
+      `${import.meta.env.VITE_API_BASE_URL}/getDashboardData?userId=${userFromStorage.id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          urn: Date.now().toString(),
+        },
       }
-    } catch (err) {
-      setError("Something went wrong");
-    } finally {
-      setLoading(false);
+    );
+    if (res.data?.responseCode == "200") {
+      setDashboard(res.data.apiResponseData);
     }
   };
 
@@ -100,10 +166,34 @@ export default function Dashboard() {
   if (error) return <div className="error">{error}</div>;
   if (!user) return <div className="empty-state">No data found</div>;
 
+  const renderStats = (title: string, data: Record<string, number>) => {
+    const max = Math.max(...Object.values(data), 1);
+
+    return (
+      <div className="dashboard-section">
+        <h4>{title}</h4>
+        <div className="stats-grid">
+          {Object.entries(data).map(([key, value]) => (
+            <div className="stat-card stat-hover" key={key}>
+              <span className="stat-label">{key}</span>
+              <span className="stat-number">{value}</span>
+              <div className="bar-track">
+                <div
+                  className="bar-fill"
+                  style={{ width: `${(value / max) * 100}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="dashboard-container">
       {/* ================= USER CARD ================= */}
-      <div className="user-card">
+      <div className="user-card user-hover">
         <img
           src={user.profilePic || "https://i.pravatar.cc/150?img=3"}
           alt="Profile"
@@ -112,12 +202,18 @@ export default function Dashboard() {
         <div className="user-info">
           <h3>{user.name || "-"}</h3>
           <p>{user.email || "-"}</p>
-          {/* <span className="role">{user.role || "-"}</span> */}
 
           <div className="user-meta">
-          {user.role && <div><strong>Role:</strong> {user.role}</div>}
-            {user.phone && <div><strong>Phone:</strong> {user.phone}</div>}
-
+            {user.role && (
+              <div>
+                <strong>Role:</strong> {user.role}
+              </div>
+            )}
+            {user.phone && (
+              <div>
+                <strong>Phone:</strong> {user.phone}
+              </div>
+            )}
             {user.address && (
               <div>
                 <strong>Address:</strong>{" "}
@@ -126,33 +222,28 @@ export default function Dashboard() {
                   .join(", ")}
               </div>
             )}
-
-            {/* {user.createdAt && (
-              <div>
-                <strong>Joined:</strong>{" "}
-                {new Date(user.createdAt).toDateString()}
-              </div>
-            )} */}
           </div>
         </div>
       </div>
 
-      {/* ================= STATS ================= */}
-      <div className="stats-grid">
-        { user.role !== "employee" && (
-          <div className="stat-card">
-            <h5>Assigned Projects</h5>
-            <p>{user.projectCount}</p>
-          </div>
-        )}
+      {/* ================= DASHBOARD ================= */}
+      {dashboard && (
+        <>
+          {(dashboard.role === "superAdmin" ||
+            dashboard.role === "admin") && (
+            <>
+              {renderStats("Task Overview", dashboard.tasks)}
+              {renderStats("Project Overview", dashboard.projects)}
+            </>
+          )}
 
-        {typeof user.taskCount === "number" && (
-          <div className="stat-card">
-            <h5>Assigned Tasks</h5>
-            <p>{user.taskCount}</p>
-          </div>
-        )}
-      </div>
+          {dashboard.role === "employee" &&
+            renderStats("My Tasks", dashboard.tasks)}
+
+          {dashboard.role === "client" &&
+            renderStats("My Projects", dashboard.projects)}
+        </>
+      )}
     </div>
   );
 }

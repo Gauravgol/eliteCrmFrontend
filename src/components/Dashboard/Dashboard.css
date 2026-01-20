@@ -10,10 +10,16 @@
   display: flex;
   align-items: center;
   background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-  margin-bottom: 30px;
+  padding: 22px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  margin-bottom: 32px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.user-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
 }
 
 .user-card img {
@@ -34,17 +40,6 @@
   color: #666;
 }
 
-.user-info .role {
-  display: inline-block;
-  margin-top: 6px;
-  padding: 4px 12px;
-  background: #000;
-  color: #fff;
-  border-radius: 12px;
-  font-size: 12px;
-}
-
-/* Extra user details */
 .user-meta {
   margin-top: 10px;
   font-size: 13px;
@@ -55,7 +50,18 @@
   margin-top: 4px;
 }
 
-/* ================= STATS ================= */
+/* ================= DASHBOARD ================= */
+
+.dashboard-section {
+  margin-bottom: 40px;
+}
+
+.dashboard-section h4 {
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+/* ================= GRID ================= */
 
 .stats-grid {
   display: grid;
@@ -63,24 +69,51 @@
   gap: 20px;
 }
 
+/* ================= STAT CARD ================= */
+
 .stat-card {
   background: #fff;
   padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.stat-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.stat-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #666;
+  text-transform: uppercase;
+}
+
+.stat-number {
+  font-size: 30px;
+  font-weight: 700;
+  margin: 8px 0;
+}
+
+/* ================= BAR GRAPH ================= */
+
+.bar-track {
+  width: 100%;
+  height: 8px;
+  background: #e9ecef;
   border-radius: 10px;
-  text-align: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
 }
 
-.stat-card h5 {
-  margin-bottom: 10px;
-  font-weight: 500;
-  color: #444;
-}
-
-.stat-card p {
-  font-size: 28px;
-  font-weight: bold;
-  color: #000;
+.bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #000, #555);
+  border-radius: 10px;
+  transition: width 0.4s ease;
 }
 
 /* ================= STATES ================= */
