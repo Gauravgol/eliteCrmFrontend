@@ -4,6 +4,7 @@ import "./TaskDetails.css";
 import { generateUrn } from "../../utils/generateUrn";
 import { toast } from "react-toastify";
 import moment from "moment-timezone";
+import RichTextEditor from "../RichTextEditor/RichTextEditor";
 
 
 export default function TaskDetails() {
@@ -240,326 +241,329 @@ export default function TaskDetails() {
 
   return (
     <div className="page-container">
-              <div style={{ padding: "10px" }}>
-      {/* ================= HEADER ================= */}
-      <div className="task-header">
-        <div>
-          {editingField === "name" ? (
-            <input
-              autoFocus
-              className="inline-input title-input"
-              value={draftValue}
-              onChange={(e) => setDraftValue(e.target.value)}
-              onBlur={() => updateTaskField({ name: draftValue })}
-            />
-          ) : (
-            <h2
-              className="editable"
-              onClick={() => {
-                setEditingField("name");
-                setDraftValue(task.name);
-              }}
-            >
-              {task.name}
-            </h2>
-          )}
-          <p className="muted">{task.projectId?.name}</p>
-        </div>
-      </div>
-
-      {/* ================= BODY ================= */}
-      <div className="task-body">
-        {/* ================= LEFT ================= */}
-        <div className="task-main">
-
-          {/* DESCRIPTION */}
-          <div className="section-header" onClick={() => setShowDescription(!showDescription)}>
-            <span>{showDescription ? "▾" : "▸"} Description</span>
-          </div>
-
-          {showDescription && (
-            editingField === "description" ? (
-              <textarea
+      <div style={{ padding: "10px" }}>
+        {/* ================= HEADER ================= */}
+        <div className="task-header">
+          <div>
+            {editingField === "name" ? (
+              <input
                 autoFocus
-                className="inline-textarea"
+                className="inline-input title-input"
                 value={draftValue}
                 onChange={(e) => setDraftValue(e.target.value)}
-                onBlur={() => updateTaskField({ description: draftValue })}
+                onBlur={() => updateTaskField({ name: draftValue })}
               />
             ) : (
-              <p
-                className="task-desc editable"
+              <h2
+                className="editable"
                 onClick={() => {
-                  setEditingField("description");
-                  setDraftValue(task.description || "");
+                  setEditingField("name");
+                  setDraftValue(task.name);
                 }}
               >
-                {task.description || "Click to add description"}
-              </p>
-            )
-          )}
-
-          {/* ATTACHMENTS */}
-          <div
-            className="section-header"
-            onClick={() => setShowAttachments(!showAttachments)}
-          >
-            <span>{showAttachments ? "▾" : "▸"} Attachments</span>
+                {task.name}
+              </h2>
+            )}
+            <p className="muted">{task.projectId?.name}</p>
           </div>
+        </div>
 
-          {showAttachments && (
-  <>
-    {(task.attachments || []).length === 0 ? (
-      <p className="muted">No attachments</p>
-    ) : (
-      <div className="attachments-grid">
-        {(task.attachments || []).map((a: any) => {
-          const isPdf = a.url.toLowerCase().endsWith(".pdf");
+        {/* ================= BODY ================= */}
+        <div className="task-body">
+          {/* ================= LEFT ================= */}
+          <div className="task-main">
 
-          return (
-            <a
-              key={a._id}
-              href={a.url}
-              target="_blank"
-              rel="noreferrer"
-              className="attachment-card"
-            >
-              {/* PREVIEW BOX */}
-              <div className="attachment-preview">
-                {isPdf ? (
-                 <div className="attachment-pdf">
-                 <i className="fa-solid fa-file-pdf pdf-fa-icon"></i>
-               </div>
-                ) : (
-                  <img
-                    src={a.url}
-                    alt={getFileName(a.url)}
-                    loading="lazy"
-                  />
-                )}
-              </div>
 
-              {/* FILE NAME BELOW BOX */}
-              <div className="attachment-name">
-                {getFileName(a.url)}
-              </div>
-            </a>
-          );
-        })}
-      </div>
-    )}
+            {/* DESCRIPTION */}
+            <div className="section-header" onClick={() => setShowDescription(!showDescription)}>
+              <span>{showDescription ? "▾" : "▸"} Description</span>
+            </div>
 
-    {/* ADD ATTACHMENT */}
-    <label className="attach-btn">
-      {uploading ? "Uploading..." : "+ Add attachment"}
-      <input
-        type="file"
-        multiple
-        hidden
-        onChange={(e) => uploadAttachments(e.target.files)}
-      />
-    </label>
-  </>
-)}
- 
-
-          {/* COMMENTS */}
-          <div className="section-header" onClick={() => setShowComments(!showComments)}>
-            <span>{showComments ? "▾" : "▸"} Comments</span>
-          </div>
-
-          {showComments && (
-            <>
-              {(task.comments || []).length === 0 ? (
-                <p className="muted">No comments yet</p>
+            {showDescription &&
+              (editingField === "description" ? (
+                <RichTextEditor
+                  initialValue={task.description || ""}
+                  onSave={(content) => {
+                    updateTaskField({ description: content });
+                  }}
+                  onCancel={() => {
+                    setEditingField(null);
+                  }}
+                />
               ) : (
-                task.comments.map((c: any) => (
-                  <div key={c._id} className="comment">
-                    <strong>{c.commenterName}</strong>
-                    <span className="comment-time">
-                      {moment
-                        .utc(c.commentedAt)
-                        .tz("Asia/Kolkata")
-                        .format("DD MMM YYYY, hh:mm A")}
-                    </span>
-                    <p
-                      dangerouslySetInnerHTML={{
-                        __html: c.comment.replace(
-                          /@(\w+)/g,
-                          `<span class="mention">@$1</span>`
-                        ),
-                      }}
-                    />
-                  </div>
-                ))
-              )}
+                <div
+                  className="task-desc editable"
+                  onClick={() => {
+                    setEditingField("description");
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: task.description || "Click to add description",
+                  }}
+                />
+              ))}
 
-              {/* <textarea
+
+            {/* ATTACHMENTS */}
+            <div
+              className="section-header"
+              onClick={() => setShowAttachments(!showAttachments)}
+            >
+              <span>{showAttachments ? "▾" : "▸"} Attachments</span>
+            </div>
+
+            {showAttachments && (
+              <>
+                {(task.attachments || []).length === 0 ? (
+                  <p className="muted">No attachments</p>
+                ) : (
+                  <div className="attachments-grid">
+                    {(task.attachments || []).map((a: any) => {
+                      const isPdf = a.url.toLowerCase().endsWith(".pdf");
+
+                      return (
+                        <a
+                          key={a._id}
+                          href={a.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="attachment-card"
+                        >
+                          {/* PREVIEW BOX */}
+                          <div className="attachment-preview">
+                            {isPdf ? (
+                              <div className="attachment-pdf">
+                                <i className="fa-solid fa-file-pdf pdf-fa-icon"></i>
+                              </div>
+                            ) : (
+                              <img
+                                src={a.url}
+                                alt={getFileName(a.url)}
+                                loading="lazy"
+                              />
+                            )}
+                          </div>
+
+                          {/* FILE NAME BELOW BOX */}
+                          <div className="attachment-name">
+                            {getFileName(a.url)}
+                          </div>
+                        </a>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* ADD ATTACHMENT */}
+                <label className="attach-btn">
+                  {uploading ? "Uploading..." : "+ Add attachment"}
+                  <input
+                    type="file"
+                    multiple
+                    hidden
+                    onChange={(e) => uploadAttachments(e.target.files)}
+                  />
+                </label>
+              </>
+            )}
+
+
+            {/* COMMENTS */}
+            <div className="section-header" onClick={() => setShowComments(!showComments)}>
+              <span>{showComments ? "▾" : "▸"} Comments</span>
+            </div>
+
+            {showComments && (
+              <>
+                {(task.comments || []).length === 0 ? (
+                  <p className="muted">No comments yet</p>
+                ) : (
+                  task.comments.map((c: any) => (
+                    <div key={c._id} className="comment">
+                      <strong>{c.commenterName}</strong>
+                      <span className="comment-time">
+                        {moment
+                          .utc(c.commentedAt)
+                          .tz("Asia/Kolkata")
+                          .format("DD MMM YYYY, hh:mm A")}
+                      </span>
+                      <p
+                        dangerouslySetInnerHTML={{
+                          __html: c.comment.replace(
+                            /@(\w+)/g,
+                            `<span class="mention">@$1</span>`
+                          ),
+                        }}
+                      />
+                    </div>
+                  ))
+                )}
+
+                {/* <textarea
                 className="comment-box"
                 placeholder="Write a comment…"
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
               /> */}
-              <div className="comment-mention-wrapper" ref={commentRef}>
-                <textarea
-                  className="comment-box"
-                  placeholder="Write a comment… use @ to mention"
-                  value={commentText}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setCommentText(value);
+                <div className="comment-mention-wrapper" ref={commentRef}>
+                  <textarea
+                    className="comment-box"
+                    placeholder="Write a comment… use @ to mention"
+                    value={commentText}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setCommentText(value);
 
-                    const cursor = e.target.selectionStart;
-                    const textBeforeCursor = value.slice(0, cursor);
-                    const match = textBeforeCursor.match(/@(\w*)$/);
+                      const cursor = e.target.selectionStart;
+                      const textBeforeCursor = value.slice(0, cursor);
+                      const match = textBeforeCursor.match(/@(\w*)$/);
 
-                    if (match) {
-                      // setMentionSearch(match[1]);
-                      setShowMentionList(true);
-                      fetchUsersForMention(match[1]);
-                    } else {
-                      setShowMentionList(false);
-                    }
-                  }}
-                />
-
-                {showMentionList && mentionList.length > 0 && (
-                  <ul className="mention-dropdown">
-                    {mentionList.map((u) => (
-                      <li
-                        key={u._id}
-                        onClick={() => {
-                          const updatedText = commentText.replace(
-                            /@(\w*)$/,
-                            `@${u.name} `
-                          );
-                          setCommentText(updatedText);
-                          setShowMentionList(false);
-                        }}
-                      >
-                        @{u.name}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-
-
-              <button
-                className="comment-btn"
-                disabled={!commentText.trim() || updating}
-                onClick={() => {
-                  updateTaskField({
-                    comment: commentText,
-                    commenterId: "6939b329f8799ddbd5833664",
-                    commenterName: "Gaurav",
-                  });
-                  setCommentText("");
-                }}
-              >
-                Add
-              </button>
-            </>
-          )}
-        </div>
-
-        {/* ================= RIGHT ================= */}
-        <div className="task-info">
-          <div className="info-row">
-            <label>Status</label>
-            <select
-              className={`status-select status-${task.status.toLowerCase()}`}
-              value={task.status}
-              onChange={(e) => updateTaskField({ status: e.target.value })}
-            >
-              <option value="TODO">To do</option>
-              <option value="INPROGRESS">In Progress</option>
-              <option value="COMPLETE">Complete</option>
-              <option value="HOLD">HOLD</option>
-              <option value="QAINPROGRESS">Qa in progress</option>
-              <option value="QACOMPLETE">Qa complete</option>
-              <option value="QCINPROGRESS">Qc in progress</option>
-              <option value="QCCOMPLETE">Qc complete</option>
-            </select>
-          </div>
-
-          <div className="info-row">
-            <label>Priority</label>
-            <select
-              value={task.priority}
-              onChange={(e) => updateTaskField({ priority: e.target.value })}
-            >
-              <option value="HIGH">HIGH</option>
-              <option value="MEDIUM">MEDIUM</option>
-              <option value="LOW">LOW</option>
-            </select>
-          </div>
-
-          <div className="info-row assign-wrapper" ref={assignRef}>
-            <label>Assigned To</label>
-
-            <div
-              className="assign-inprogress"
-              onClick={() => {
-                if (assignedUser) {
-                  setAssignedUser(null);
-                  setAssignSearch("");
-                  setShowAssignList(true);
-                  fetchUsersForAssign("");
-                }
-              }}
-            >
-              {assignedUser && (
-                <span className="assign-chip">
-                  {assignedUser.name}
-                  <span
-                    onClick={(e) => {
-                      e.stopPropagation(); // VERY IMPORTANT
-                      clearAssignedUser();
+                      if (match) {
+                        // setMentionSearch(match[1]);
+                        setShowMentionList(true);
+                        fetchUsersForMention(match[1]);
+                      } else {
+                        setShowMentionList(false);
+                      }
                     }}
-                  >
+                  />
 
-                  </span>
-                </span>
-              )}
+                  {showMentionList && mentionList.length > 0 && (
+                    <ul className="mention-dropdown">
+                      {mentionList.map((u) => (
+                        <li
+                          key={u._id}
+                          onClick={() => {
+                            const updatedText = commentText.replace(
+                              /@(\w*)$/,
+                              `@${u.name} `
+                            );
+                            setCommentText(updatedText);
+                            setShowMentionList(false);
+                          }}
+                        >
+                          @{u.name}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
 
-              {!assignedUser && (
-                <input
-                  autoFocus
-                  type="text"
-                  placeholder="Assign user"
-                  value={assignSearch}
-                  onChange={handleAssignChange}
-                  onFocus={handleAssignFocus}
-                />
-              )}
-            </div>
 
-            {showAssignList && assignList.length > 0 && (
-              <ul className="assign-dropdown">
-                {assignList.map((u) => (
-                  <li
-                    key={u._id}
-                    onClick={() => selectAssignedUser(u)}
-                  >
-                    {u.name}
-                  </li>
-                ))}
-              </ul>
+                <button
+                  className="comment-btn"
+                  disabled={!commentText.trim() || updating}
+                  onClick={() => {
+                    updateTaskField({
+                      comment: commentText,
+                      commenterId: "6939b329f8799ddbd5833664",
+                      commenterName: "Gaurav",
+                    });
+                    setCommentText("");
+                  }}
+                >
+                  Add
+                </button>
+              </>
             )}
           </div>
 
+          {/* ================= RIGHT ================= */}
+          <div className="task-info">
+            <div className="info-row">
+              <label>Status</label>
+              <select
+                className={`status-select status-${task.status.toLowerCase()}`}
+                value={task.status}
+                onChange={(e) => updateTaskField({ status: e.target.value })}
+              >
+                <option value="TODO">To do</option>
+                <option value="INPROGRESS">In Progress</option>
+                <option value="COMPLETE">Complete</option>
+                <option value="HOLD">HOLD</option>
+                <option value="QAINPROGRESS">Qa in progress</option>
+                <option value="QACOMPLETE">Qa complete</option>
+                <option value="QCINPROGRESS">Qc in progress</option>
+                <option value="QCCOMPLETE">Qc complete</option>
+              </select>
+            </div>
 
-          <div className="info-row">
-            <label>Due Date</label>
-            <input
-              type="date"
-              value={task.dueDate?.slice(0, 10) || ""}
-              onChange={(e) => updateTaskField({ dueDate: e.target.value })}
-            />
+            <div className="info-row">
+              <label>Priority</label>
+              <select
+                value={task.priority}
+                onChange={(e) => updateTaskField({ priority: e.target.value })}
+              >
+                <option value="HIGH">HIGH</option>
+                <option value="MEDIUM">MEDIUM</option>
+                <option value="LOW">LOW</option>
+              </select>
+            </div>
+
+            <div className="info-row assign-wrapper" ref={assignRef}>
+              <label>Assigned To</label>
+
+              <div
+                className="assign-inprogress"
+                onClick={() => {
+                  if (assignedUser) {
+                    setAssignedUser(null);
+                    setAssignSearch("");
+                    setShowAssignList(true);
+                    fetchUsersForAssign("");
+                  }
+                }}
+              >
+                {assignedUser && (
+                  <span className="assign-chip">
+                    {assignedUser.name}
+                    <span
+                      onClick={(e) => {
+                        e.stopPropagation(); // VERY IMPORTANT
+                        clearAssignedUser();
+                      }}
+                    >
+
+                    </span>
+                  </span>
+                )}
+
+                {!assignedUser && (
+                  <input
+                    autoFocus
+                    type="text"
+                    placeholder="Assign user"
+                    value={assignSearch}
+                    onChange={handleAssignChange}
+                    onFocus={handleAssignFocus}
+                  />
+                )}
+              </div>
+
+              {showAssignList && assignList.length > 0 && (
+                <ul className="assign-dropdown">
+                  {assignList.map((u) => (
+                    <li
+                      key={u._id}
+                      onClick={() => selectAssignedUser(u)}
+                    >
+                      {u.name}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+
+            <div className="info-row">
+              <label>Due Date</label>
+              <input
+                type="date"
+                value={task.dueDate?.slice(0, 10) || ""}
+                onChange={(e) => updateTaskField({ dueDate: e.target.value })}
+              />
+            </div>
           </div>
         </div>
-      </div>
       </div>
     </div>
   );

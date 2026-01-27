@@ -385,6 +385,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { generateUrn } from "../../utils/generateUrn";
 import { toast } from "react-toastify";
 import moment from "moment-timezone";
+import RichTextEditor from "../RichTextEditor/RichTextEditor";
 
 export default function ProjectDetails() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -592,26 +593,26 @@ export default function ProjectDetails() {
 
             {showDescription &&
               (editingDesc ? (
-                <textarea
-                  autoFocus
-                  className="inline-textarea"
-                  value={descDraft}
-                  onChange={(e) => setDescDraft(e.target.value)}
-                  onBlur={() => {
-                    updateProject({ description: descDraft });
+                <RichTextEditor
+                  initialValue={project.description || ""}
+                  onSave={(content) => {
+                    updateProject({ description: content });
+                    setEditingDesc(false);
+                  }}
+                  onCancel={() => {
                     setEditingDesc(false);
                   }}
                 />
               ) : (
-                <p
+                <div
                   className="task-desc editable"
                   onClick={() => {
-                    setDescDraft(project.description || "");
                     setEditingDesc(true);
                   }}
-                >
-                  {project.description || "Click to add description"}
-                </p>
+                  dangerouslySetInnerHTML={{
+                    __html: project.description || "Click to add description",
+                  }}
+                />
               ))}
 
             {/* ATTACHMENTS */}
@@ -623,62 +624,62 @@ export default function ProjectDetails() {
             </div>
 
             {showAttachments && (
-  <>
-    {(project.attachments || []).length === 0 ? (
-      <p className="muted">No attachments</p>
-    ) : (
-      <div className="attachments-grid">
-      {(project.attachments || []).map((a: any) => {
-        const isPdf = a.url.toLowerCase().endsWith(".pdf");
-    
-        return (
-          <a
-            key={a._id}
-            href={a.url}
-            target="_blank"
-            rel="noreferrer"
-            className="attachment-card"
-          >
-            {/* PREVIEW BOX */}
-            <div className="attachment-preview">
-              {isPdf ? (
-                <div className="attachment-pdf">
-                  <i className="fa-solid fa-file-pdf pdf-fa-icon"></i>
-                </div>
-              ) : (
-                <img
-                  src={a.url}
-                  alt={fileName(a.url)}
-                  loading="lazy"
-                />
-              )}
-            </div>
-    
-            {/* FILE NAME (BELOW BOX) */}
-            <div className="attachment-name">
-              {fileName(a.url)}
-            </div>
-          </a>
-        );
-      })}
-    </div>
-    )}
+              <>
+                {(project.attachments || []).length === 0 ? (
+                  <p className="muted">No attachments</p>
+                ) : (
+                  <div className="attachments-grid">
+                    {(project.attachments || []).map((a: any) => {
+                      const isPdf = a.url.toLowerCase().endsWith(".pdf");
 
-    {/* ADD ATTACHMENT — MUST BE INSIDE SAME FRAGMENT */}
-    <label className="attach-btn">
-      + Add attachment
-      <input
-        type="file"
-        multiple
-        hidden
-        onChange={(e) => uploadAttachments(e.target.files)}
-      />
-    </label>
-  </>
-)}
+                      return (
+                        <a
+                          key={a._id}
+                          href={a.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="attachment-card"
+                        >
+                          {/* PREVIEW BOX */}
+                          <div className="attachment-preview">
+                            {isPdf ? (
+                              <div className="attachment-pdf">
+                                <i className="fa-solid fa-file-pdf pdf-fa-icon"></i>
+                              </div>
+                            ) : (
+                              <img
+                                src={a.url}
+                                alt={fileName(a.url)}
+                                loading="lazy"
+                              />
+                            )}
+                          </div>
 
-               
-            
+                          {/* FILE NAME (BELOW BOX) */}
+                          <div className="attachment-name">
+                            {fileName(a.url)}
+                          </div>
+                        </a>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* ADD ATTACHMENT — MUST BE INSIDE SAME FRAGMENT */}
+                <label className="attach-btn">
+                  + Add attachment
+                  <input
+                    type="file"
+                    multiple
+                    hidden
+                    onChange={(e) => uploadAttachments(e.target.files)}
+                  />
+                </label>
+              </>
+            )}
+
+
+
 
             {/* COMMENTS */}
             <div
