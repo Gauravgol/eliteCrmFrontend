@@ -7,7 +7,9 @@ import {
   FaFolderOpen,
   FaUsers,
   FaTasks,
-  FaComments
+  FaComments,
+  FaChevronLeft,
+  FaChevronRight
 } from "react-icons/fa";
 import "./Sidebar.css";
 
@@ -24,6 +26,10 @@ export default function Sidebar() {
   const user = storedUser ? JSON.parse(storedUser) : null;
 
   const [menu, setMenu] = useState<MenuItem[]>([]);
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    const saved = localStorage.getItem("sidebarCollapsed");
+    return saved === "true";
+  });
 
   useEffect(() => {
     // if (!user?.id || !token) {
@@ -44,7 +50,7 @@ export default function Sidebar() {
         );
 
         setMenu(res.data.apiResponseData?.menu || []);
-      } catch(e) {
+      } catch (e) {
         toast.error("Failed to load sidebar menu");
       }
     };
@@ -52,24 +58,50 @@ export default function Sidebar() {
     fetchMenu();
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem("sidebarCollapsed", isCollapsed.toString());
+    // Update CSS variable for content area adjustment
+    document.documentElement.style.setProperty(
+      '--sidebar-width',
+      isCollapsed ? '60px' : '250px'
+    );
+  }, [isCollapsed]);
+
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
   return (
-    <div className="sidebar-container">
+    <div className={`sidebar-container ${isCollapsed ? 'collapsed' : ''}`}>
       <ul className="sidebar-menu">
         {menu.length === 0 ? (
           <>
             {/* Fallback menu (keeps UI usable) */}
-            <li onClick={() => navigate("/dashboard")}>
-              <FaTachometerAlt /> Dashboard
+            <li
+              onClick={() => navigate("/dashboard")}
+              title={isCollapsed ? "Dashboard" : ""}
+            >
+              <FaTachometerAlt />
+              {!isCollapsed && <span>Dashboard</span>}
             </li>
           </>
         ) : (
           menu.map((item, index) => (
-            <li key={index} onClick={() => navigate(`/${item.path}`)}>
-              {getIcon(item.path)} {item.label}
+            <li
+              key={index}
+              onClick={() => navigate(`/${item.path}`)}
+              title={isCollapsed ? item.label : ""}
+            >
+              {getIcon(item.path)}
+              {!isCollapsed && <span>{item.label}</span>}
             </li>
           ))
         )}
       </ul>
+
+      <button className="sidebar-toggle" onClick={toggleSidebar}>
+        {isCollapsed ? <FaChevronRight /> : <FaChevronLeft />}
+      </button>
     </div>
   );
 }

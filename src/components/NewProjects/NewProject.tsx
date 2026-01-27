@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "./NewProject.css";
@@ -49,7 +49,6 @@ export default function NewProject() {
       toast.error("Please fill all required fields");
       return;
     }
-
     try {
       setLoading(true);
 
@@ -59,7 +58,8 @@ export default function NewProject() {
       formData.append("status", form.status);
       formData.append("startDate", form.startDate);
       formData.append("dueDate", form.dueDate);
-      formData.append("owner", user.id);
+      formData.append("owner", assignedUser._id);
+      formData.append("createdBy", user.id)
 
       attachments.forEach((file) => {
         formData.append("attachments", file);
@@ -98,6 +98,56 @@ export default function NewProject() {
       setLoading(false);
     }
   };
+
+     /* ---------------- ASSIGN STATES ---------------- */
+     const [assignedUser, setAssignedUser] = useState<any>(null);
+     const [assignSearch, setAssignSearch] = useState("");
+     const [assignList, setAssignList] = useState<any[]>([]);
+     const [showAssignList, setShowAssignList] = useState(false);
+     const assignRef = useRef<HTMLDivElement>(null);
+     /* -------- ASSIGN USERS -------- */
+     const fetchUsersForAssign = async (search: string) => {
+       try {
+         const res = await fetch(
+           `${import.meta.env.VITE_API_BASE_URL}/tagClient?search=${search}`,
+           { headers: { urn: generateUrn(13) } }
+         );
+         const json = await res.json();
+         setAssignList(json?.apiResponseData?.list || []);
+       } catch {
+         toast.error("Failed to load users");
+       }
+     };
+   
+     const handleAssignFocus = () => {
+       if (assignedUser) return;
+       setShowAssignList(true);
+       if (assignList.length === 0) {
+         fetchUsersForAssign("");
+       }
+     };
+   
+     const handleAssignChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+       const value = e.target.value;
+       setAssignSearch(value);
+       setShowAssignList(true);
+   
+       if (value.trim()) fetchUsersForAssign(value);
+       else setAssignList([]);
+     };
+   
+     const selectAssignedUser = (u: any) => {
+       setAssignedUser(u);
+       setAssignSearch("");
+       setShowAssignList(false);
+     };
+   
+     const clearAssignedUser = () => {
+       setAssignedUser(null);
+       setAssignSearch("");
+       setAssignList([]);
+       setShowAssignList(false);
+     };
 
   return (
     <div className="page-container">
@@ -152,7 +202,7 @@ export default function NewProject() {
               />
             </div>
           </div>
-
+          <div className="form-grid">
           {/* STATUS */}
           <div className="form-row">
             <label>Status</label>
@@ -167,6 +217,39 @@ export default function NewProject() {
               <option value="DELIVERD">DELIVERED</option>
               <option value="HOLD">HOLD</option>
             </select>
+          </div>
+          <div className="form-row assign-wrapper" ref={assignRef}>
+              <label>Assign To</label>
+
+              <div className="assign-input">
+                {assignedUser && (
+                  <span className="assign-chip">
+                    {assignedUser.name}
+                    <span onClick={clearAssignedUser}>×</span>
+                  </span>
+                )}
+
+                {!assignedUser && (
+                  <input
+                    type="text"
+                    placeholder="Assign user"
+                    value={assignSearch}
+                    onChange={handleAssignChange}
+                    onFocus={handleAssignFocus}
+                  />
+                )}
+              </div>
+
+              {showAssignList && assignList.length > 0 && (
+                <ul className="assign-dropdown">
+                  {assignList.map((u) => (
+                    <li key={u._id} onClick={() => selectAssignedUser(u)}>
+                      {u.name}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
 
           {/* ATTACHMENTS */}
