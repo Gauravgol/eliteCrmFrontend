@@ -6,6 +6,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import { FaBars } from "react-icons/fa";
 import "./Navbar.css";
 import moment from "moment";
+import { generateUrn } from "../../utils/generateUrn";
 
 interface NavbarProps {
   isCollapsed: boolean;
@@ -24,8 +25,8 @@ export default function Navbar({ isCollapsed, toggleSidebar }: NavbarProps) {
   const navigate = useNavigate();
   const listRef = useRef<HTMLDivElement>(null);
 
-  const userId = "6940447a596e4f73ec2b354b"; // As provided by user
-  const urn = "6789608787678687687"; // As provided by user
+  const userId = JSON.parse(localStorage.getItem("user") || "{}");
+  const urn = generateUrn()
 
   useEffect(() => {
     fetchNotifications(1, true);
@@ -35,7 +36,7 @@ export default function Navbar({ isCollapsed, toggleSidebar }: NavbarProps) {
     if (loading || (!hasMore && !isInitial)) return;
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:5000/getNotification?userId=${userId}&page=${p}&limit=5`, {
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/getNotification?userId=${userId.id}&page=${p}&limit=5`, {
         headers: { urn }
       });
 
