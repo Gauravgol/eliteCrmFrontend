@@ -13,7 +13,7 @@ interface NavbarProps {
   toggleSidebar: () => void;
 }
 
-export default function Navbar({ isCollapsed, toggleSidebar }: NavbarProps) {
+export default function Navbar({  toggleSidebar }: NavbarProps) {
   const [profileOpen, setProfileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);

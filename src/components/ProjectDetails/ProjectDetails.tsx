@@ -403,10 +403,10 @@ export default function ProjectDetails() {
 
   // edit
   const [editingDesc, setEditingDesc] = useState(false);
-  const [descDraft, setDescDraft] = useState("");
+  // const [descDraft, setDescDraft] = useState("");
 
   const [commentText, setCommentText] = useState("");
-  const [uploading, setUploading] = useState(false);
+  // const [uploading, setUploading] = useState(false);
   const [showTasks, setShowTasks] = useState(true);
 
 
@@ -497,9 +497,9 @@ export default function ProjectDetails() {
     fd.append("userId", USER_ID);
     Array.from(files).forEach((f) => fd.append("attachments", f));
 
-    setUploading(true);
+    // setUploading(true);
     await updateProject(fd, true);
-    setUploading(false);
+    // setUploading(false);
   };
 
   const fileName = (url: string) => {
