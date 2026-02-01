@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "./NewProject.css";
 import { generateUrn } from "../../utils/generateUrn";
+import RichTextEditor from "../RichTextEditor/RichTextEditor";
 
 export default function NewProject() {
   const today = new Date().toISOString().split("T")[0];
@@ -99,55 +100,55 @@ export default function NewProject() {
     }
   };
 
-     /* ---------------- ASSIGN STATES ---------------- */
-     const [assignedUser, setAssignedUser] = useState<any>(null);
-     const [assignSearch, setAssignSearch] = useState("");
-     const [assignList, setAssignList] = useState<any[]>([]);
-     const [showAssignList, setShowAssignList] = useState(false);
-     const assignRef = useRef<HTMLDivElement>(null);
-     /* -------- ASSIGN USERS -------- */
-     const fetchUsersForAssign = async (search: string) => {
-       try {
-         const res = await fetch(
-           `${import.meta.env.VITE_API_BASE_URL}/tagClient?search=${search}`,
-           { headers: { urn: generateUrn(13) } }
-         );
-         const json = await res.json();
-         setAssignList(json?.apiResponseData?.list || []);
-       } catch {
-         toast.error("Failed to load users");
-       }
-     };
-   
-     const handleAssignFocus = () => {
-       if (assignedUser) return;
-       setShowAssignList(true);
-       if (assignList.length === 0) {
-         fetchUsersForAssign("");
-       }
-     };
-   
-     const handleAssignChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-       const value = e.target.value;
-       setAssignSearch(value);
-       setShowAssignList(true);
-   
-       if (value.trim()) fetchUsersForAssign(value);
-       else setAssignList([]);
-     };
-   
-     const selectAssignedUser = (u: any) => {
-       setAssignedUser(u);
-       setAssignSearch("");
-       setShowAssignList(false);
-     };
-   
-     const clearAssignedUser = () => {
-       setAssignedUser(null);
-       setAssignSearch("");
-       setAssignList([]);
-       setShowAssignList(false);
-     };
+  /* ---------------- ASSIGN STATES ---------------- */
+  const [assignedUser, setAssignedUser] = useState<any>(null);
+  const [assignSearch, setAssignSearch] = useState("");
+  const [assignList, setAssignList] = useState<any[]>([]);
+  const [showAssignList, setShowAssignList] = useState(false);
+  const assignRef = useRef<HTMLDivElement>(null);
+  /* -------- ASSIGN USERS -------- */
+  const fetchUsersForAssign = async (search: string) => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/tagClient?search=${search}`,
+        { headers: { urn: generateUrn(13) } }
+      );
+      const json = await res.json();
+      setAssignList(json?.apiResponseData?.list || []);
+    } catch {
+      toast.error("Failed to load users");
+    }
+  };
+
+  const handleAssignFocus = () => {
+    if (assignedUser) return;
+    setShowAssignList(true);
+    if (assignList.length === 0) {
+      fetchUsersForAssign("");
+    }
+  };
+
+  const handleAssignChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setAssignSearch(value);
+    setShowAssignList(true);
+
+    if (value.trim()) fetchUsersForAssign(value);
+    else setAssignList([]);
+  };
+
+  const selectAssignedUser = (u: any) => {
+    setAssignedUser(u);
+    setAssignSearch("");
+    setShowAssignList(false);
+  };
+
+  const clearAssignedUser = () => {
+    setAssignedUser(null);
+    setAssignSearch("");
+    setAssignList([]);
+    setShowAssignList(false);
+  };
 
   return (
     <div className="page-container">
@@ -170,13 +171,13 @@ export default function NewProject() {
           {/* DESCRIPTION */}
           <div className="form-row">
             <label>Description</label>
-            <textarea
-              name="description"
-              rows={4}
-              value={form.description}
-              onChange={handleChange}
-              placeholder="Describe the project..."
-            />
+            <div className="rich-text-wrapper">
+              <RichTextEditor
+                initialValue={form.description}
+                onChange={(content) => setForm({ ...form, description: content })}
+                hideControls={true}
+              />
+            </div>
           </div>
 
           {/* DATES */}
@@ -203,22 +204,22 @@ export default function NewProject() {
             </div>
           </div>
           <div className="form-grid">
-          {/* STATUS */}
-          <div className="form-row">
-            <label>Status</label>
-            <select
-              name="status"
-              value={form.status}
-              onChange={handleChange}
-            >
-              <option value="TODO">TODO</option>
-              <option value="INPROGRESS">IN PROGRESS</option>
-              <option value="TESTING">TESTING</option>
-              <option value="DELIVERD">DELIVERED</option>
-              <option value="HOLD">HOLD</option>
-            </select>
-          </div>
-          <div className="form-row assign-wrapper" ref={assignRef}>
+            {/* STATUS */}
+            <div className="form-row">
+              <label>Status</label>
+              <select
+                name="status"
+                value={form.status}
+                onChange={handleChange}
+              >
+                <option value="TODO">TODO</option>
+                <option value="INPROGRESS">IN PROGRESS</option>
+                <option value="TESTING">TESTING</option>
+                <option value="DELIVERD">DELIVERED</option>
+                <option value="HOLD">HOLD</option>
+              </select>
+            </div>
+            <div className="form-row assign-wrapper" ref={assignRef}>
               <label>Assign To</label>
 
               <div className="assign-input">

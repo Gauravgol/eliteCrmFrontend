@@ -559,27 +559,27 @@ export default function ProjectDetails() {
 
             {showTasks && (
               <>
-                <div style={{ marginBottom: "10px" }}>
+                <div style={{ marginBottom: "10px" }}></div>
 
-                </div>
-
-                {tasks.map((t) => (
-                  <div
-                    key={t._id}
-                    className="task-card"
-                    onClick={() => navigate(`/task/${t._id}`)}
-                  >
-                    <div className="task-title">{t.name}</div>
-                    <div className="task-meta">
-                      <span className={`status ${t.status}`}>
-                        {t.status}
-                      </span>
-                      <span className={`priority ${t.priority}`}>
-                        {t.priority}
-                      </span>
+                <div className="task-list-scroller">
+                  {tasks.map((t) => (
+                    <div
+                      key={t._id}
+                      className="task-card"
+                      onClick={() => navigate(`/task/${t._id}`)}
+                    >
+                      <div className="task-title">{t.name}</div>
+                      <div className="task-meta">
+                        <span className={`status ${t.status}`}>
+                          {t.status}
+                        </span>
+                        <span className={`priority ${t.priority}`}>
+                          {t.priority}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </>
             )}
 

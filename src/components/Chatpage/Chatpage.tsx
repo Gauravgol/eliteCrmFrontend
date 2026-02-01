@@ -38,6 +38,14 @@ export default function Chatpage() {
     };
   }, []);
 
+  // Auto-scroll to bottom on new message
+  useEffect(() => {
+    if (!loadingOld && chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages]);
+
   /* ================= FETCH CHAT USERS ================= */
 
   const fetchChatUsers = async (searchText = "") => {
@@ -76,9 +84,7 @@ export default function Chatpage() {
     setMessages(data.reverse());
     setHasMore(data.length === 20);
 
-    setTimeout(() => {
-      chatEndRef.current?.scrollIntoView();
-    }, 0);
+    // Scroll handled by useEffect
   };
 
   const loadOlderMessages = async () => {
@@ -172,102 +178,100 @@ export default function Chatpage() {
 
   return (
     <div className="page-container">
-        <div className="chat-page">
-          {/* LEFT */}
-          <div className="chat-sidebar">
-            <h3>Chats</h3>
-            <input
-              className="chat-search"
-              placeholder="Search users"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+      <div className="chat-page">
+        {/* LEFT */}
+        <div className="chat-sidebar">
+          <h3>Chats</h3>
+          <input
+            className="chat-search"
+            placeholder="Search users"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
-            <ul className="user-list">
-              {users.map((u) => (
-                <li
-                  key={u._id}
-                  className={selectedUser?._id === u._id ? "active" : ""}
-                  onClick={() => handleSelectUser(u)}
-                >
-                  <div className="user-name">{u.name}</div>
-                  <div className="user-role">{u.role}</div>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <ul className="user-list">
+            {users.map((u) => (
+              <li
+                key={u._id}
+                className={selectedUser?._id === u._id ? "active" : ""}
+                onClick={() => handleSelectUser(u)}
+              >
+                <div className="user-name">{u.name}</div>
+                <div className="user-role">{u.role}</div>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-          {/* RIGHT */}
-          <div className="chat-window">
-            {selectedUser ? (
-              <>
-                <div className="chat-header">
-                  <strong>{selectedUser.name}</strong>
-                </div>
+        {/* RIGHT */}
+        <div className="chat-window">
+          {selectedUser ? (
+            <>
+              <div className="chat-header">
+                <strong>{selectedUser.name}</strong>
+              </div>
 
-                <div
-                  className="chat-messages"
-                  ref={chatRef}
-                  onScroll={handleScroll}
-                >
-                  {messages.map((m, i) => {
-                    const dateLabel = formatDateLabel(m.createdAt);
-                    const showDate = dateLabel !== lastDate;
-                    lastDate = dateLabel;
+              <div
+                className="chat-messages"
+                ref={chatRef}
+                onScroll={handleScroll}
+              >
+                {messages.map((m, i) => {
+                  const dateLabel = formatDateLabel(m.createdAt);
+                  const showDate = dateLabel !== lastDate;
+                  lastDate = dateLabel;
 
-                    return (
-                        <div key={i}>
-                        {showDate && (
-                          <div className="date-separator">
-                            {dateLabel}
-                          </div>
-                        )}
-                      
-                        <div
-                          className={`message-row ${
-                            m.senderId === user.id ? "right" : "left"
+                  return (
+                    <div key={i}>
+                      {showDate && (
+                        <div className="date-separator">
+                          {dateLabel}
+                        </div>
+                      )}
+
+                      <div
+                        className={`message-row ${m.senderId === user.id ? "right" : "left"
                           }`}
-                        >
-                          <div
-                            className={`chat-message ${
-                              m.senderId === user.id ? "sent" : "received"
+                      >
+                        <div
+                          className={`chat-message ${m.senderId === user.id ? "sent" : "received"
                             }`}
-                          >
-                            <div>{m.message}</div>
-                            <div className="message-time">
-                              {formatTime(m.createdAt)}
-                            </div>
+                        >
+                          <div>{m.message}</div>
+                          <div className="message-time">
+                            {formatTime(m.createdAt)}
                           </div>
                         </div>
                       </div>
-                      
-                    );
-                  })}
-                  <div ref={chatEndRef} />
-                </div>
+                    </div>
 
-                <div className="chat-input">
-                  <label className="attach-btn">📎
-                    <input type="file" hidden />
-                  </label>
-
-                  <input
-                    placeholder="Type a message"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                  />
-
-                  <button onClick={sendMessage}>Send</button>
-                </div>
-              </>
-            ) : (
-              <div className="chat-empty">
-                Select a user to start chatting
+                  );
+                })}
+                <div ref={chatEndRef} />
               </div>
-            )}
-          </div>
+
+              <div className="chat-input">
+                <label className="attach-btn">📎
+                  <input type="file" hidden />
+                </label>
+
+                <input
+                  placeholder="Type a message"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                />
+
+                <button onClick={sendMessage}>Send</button>
+              </div>
+            </>
+          ) : (
+            <div className="chat-empty">
+              Select a user to start chatting
+            </div>
+          )}
         </div>
+      </div>
     </div>
   );
 }

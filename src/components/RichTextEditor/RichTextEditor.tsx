@@ -3,32 +3,48 @@ import "./RichTextEditor.css";
 
 interface RichTextEditorProps {
     initialValue: string;
-    onSave: (content: string) => void;
-    onCancel: () => void;
+    onSave?: (content: string) => void;
+    onCancel?: () => void;
+    onChange?: (content: string) => void;
+    hideControls?: boolean;
 }
 
 export default function RichTextEditor({
     initialValue,
     onSave,
     onCancel,
+    onChange,
+    hideControls = false,
 }: RichTextEditorProps) {
     const editorRef = useRef<HTMLDivElement>(null);
     const [showColorPicker, setShowColorPicker] = useState(false);
 
     useEffect(() => {
         if (editorRef.current && initialValue) {
-            editorRef.current.innerHTML = initialValue;
+            // Only update if not focused to prevent cursor jumping
+            if (document.activeElement !== editorRef.current) {
+                if (editorRef.current.innerHTML !== initialValue) {
+                    editorRef.current.innerHTML = initialValue;
+                }
+            }
         }
-    }, []);
+    }, [initialValue]);
 
     const execCommand = (command: string, value: string | null = null) => {
         document.execCommand(command, false, value || undefined);
         editorRef.current?.focus();
+        handleInput(); // Trigger change on command
     };
 
     const handleSave = () => {
         const content = editorRef.current?.innerHTML || "";
-        onSave(content);
+        if (onSave) onSave(content);
+    };
+
+    const handleInput = () => {
+        if (onChange && editorRef.current) {
+            onChange(editorRef.current.innerHTML);
+        }
     };
 
     const handleColorChange = (color: string) => {
@@ -164,16 +180,19 @@ export default function RichTextEditor({
                 className="rte-editor"
                 contentEditable
                 suppressContentEditableWarning
+                onInput={handleInput}
             />
 
-            <div className="rte-actions">
-                <button type="button" className="btn-save" onClick={handleSave}>
-                    Save
-                </button>
-                <button type="button" className="btn-cancel" onClick={onCancel}>
-                    Cancel
-                </button>
-            </div>
+            {!hideControls && (
+                <div className="rte-actions">
+                    <button type="button" className="btn-save" onClick={handleSave}>
+                        Save
+                    </button>
+                    <button type="button" className="btn-cancel" onClick={() => onCancel && onCancel()}>
+                        Cancel
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

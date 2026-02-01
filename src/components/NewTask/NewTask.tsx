@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { generateUrn } from "../../utils/generateUrn";
 import "./NewTask.css";
+import RichTextEditor from "../RichTextEditor/RichTextEditor";
 
 export default function NewTask() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -171,12 +172,13 @@ export default function NewTask() {
           {/* DESCRIPTION */}
           <div className="form-row">
             <label>Description</label>
-            <textarea
-              name="description"
-              rows={4}
-              value={form.description}
-              onChange={handleChange}
-            />
+            <div className="rich-text-wrapper">
+              <RichTextEditor
+                initialValue={form.description}
+                onChange={(content) => setForm({ ...form, description: content })}
+                hideControls={true}
+              />
+            </div>
           </div>
 
           {/* GRID */}

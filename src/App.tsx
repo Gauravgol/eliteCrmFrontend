@@ -50,6 +50,7 @@
 
 
 import { Routes, Route, Outlet } from "react-router-dom";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 import Login from "./components/Login/Login";
@@ -68,10 +69,25 @@ import Tasks from "./components/Tasks/Tasks";
 import Chatpage from "./components/Chatpage/Chatpage";
 
 const Layout = () => {
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    const saved = localStorage.getItem("sidebarCollapsed");
+    return saved === "true";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("sidebarCollapsed", isCollapsed.toString());
+    document.documentElement.style.setProperty(
+      "--sidebar-width",
+      isCollapsed ? "60px" : "250px"
+    );
+  }, [isCollapsed]);
+
+  const toggleSidebar = () => setIsCollapsed(!isCollapsed);
+
   return (
     <>
-      <Navbar />
-      <Sidebar />
+      <Navbar isCollapsed={isCollapsed} toggleSidebar={toggleSidebar} />
+      <Sidebar isCollapsed={isCollapsed} />
       <Outlet />
     </>
   );
@@ -90,16 +106,11 @@ function App() {
           <Route path="projects" element={<Projects />} />
           <Route path="projects/new" element={<NewProject />} />
           <Route path="projects/:projectId" element={<ProjectDetails />} />
-          <Route
-            path="projects/:projectId/create-task"
-            element={<NewTask />}
-          />
+          <Route path="projects/:projectId/create-task" element={<NewTask />} />
           <Route path="task/:taskId" element={<TaskDetails />} />
           <Route path="users" element={<Users />} />
           <Route path="tasks" element={<Tasks />} />
           <Route path="chat" element={<Chatpage />} />
-
-
         </Route>
       </Route>
     </Routes>

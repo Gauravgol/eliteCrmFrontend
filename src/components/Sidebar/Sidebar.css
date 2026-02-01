@@ -1,7 +1,8 @@
 /* Sidebar Container */
 .sidebar-container {
   position: fixed;
-  top: 60px; /* Below the navbar */
+  top: 60px;
+  /* Below the navbar */
   left: 0;
   width: 250px;
   height: calc(100vh - 60px);
@@ -92,36 +93,14 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Toggle Button */
-.sidebar-toggle {
-  background: #222;
-  border: 1px solid #333;
-  color: white;
-  padding: 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
-  margin-top: auto;
-  width: 100%;
-}
-
-.sidebar-toggle:hover {
-  background: #333;
-}
-
-.sidebar-toggle svg {
-  font-size: 1rem;
-}
+/* Header area removed (now in Navbar) */
 
 /* Responsive Sidebar */
 @media (max-width: 768px) {
   .sidebar-container {
     width: 180px;
   }
-  
+
   .sidebar-container.collapsed {
     width: 60px;
   }

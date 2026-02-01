@@ -238,3 +238,8 @@ button:focus-visible {
 .pagination-controls .dots {
   padding: 0 6px;
 }
+
+/* Force Toastify to be on top of modals (modal is 10000) */
+.Toastify__toast-container {
+  z-index: 20000 !important;
+}

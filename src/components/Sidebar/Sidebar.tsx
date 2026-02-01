@@ -8,8 +8,6 @@ import {
   FaUsers,
   FaTasks,
   FaComments,
-  FaChevronLeft,
-  FaChevronRight
 } from "react-icons/fa";
 import "./Sidebar.css";
 
@@ -18,7 +16,11 @@ interface MenuItem {
   label: string;
 }
 
-export default function Sidebar() {
+interface SidebarProps {
+  isCollapsed: boolean;
+}
+
+export default function Sidebar({ isCollapsed }: SidebarProps) {
   const navigate = useNavigate();
 
   const storedUser = localStorage.getItem("user");
@@ -26,17 +28,8 @@ export default function Sidebar() {
   const user = storedUser ? JSON.parse(storedUser) : null;
 
   const [menu, setMenu] = useState<MenuItem[]>([]);
-  const [isCollapsed, setIsCollapsed] = useState(() => {
-    const saved = localStorage.getItem("sidebarCollapsed");
-    return saved === "true";
-  });
 
   useEffect(() => {
-    // if (!user?.id || !token) {
-    //   toast.error("Unable to load menu. Please login again.");
-    //   return;
-    // }
-
     const fetchMenu = async () => {
       try {
         const res = await axios.get(
@@ -58,25 +51,11 @@ export default function Sidebar() {
     fetchMenu();
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("sidebarCollapsed", isCollapsed.toString());
-    // Update CSS variable for content area adjustment
-    document.documentElement.style.setProperty(
-      '--sidebar-width',
-      isCollapsed ? '60px' : '250px'
-    );
-  }, [isCollapsed]);
-
-  const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
-  };
-
   return (
     <div className={`sidebar-container ${isCollapsed ? 'collapsed' : ''}`}>
       <ul className="sidebar-menu">
         {menu.length === 0 ? (
           <>
-            {/* Fallback menu (keeps UI usable) */}
             <li
               onClick={() => navigate("/dashboard")}
               title={isCollapsed ? "Dashboard" : ""}
@@ -98,10 +77,6 @@ export default function Sidebar() {
           ))
         )}
       </ul>
-
-      <button className="sidebar-toggle" onClick={toggleSidebar}>
-        {isCollapsed ? <FaChevronRight /> : <FaChevronLeft />}
-      </button>
     </div>
   );
 }
