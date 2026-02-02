@@ -1,17 +1,19 @@
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "./Tasks.css";
 import { generateUrn } from "../../utils/generateUrn";
 
 export default function Tasks() {
     const navigate = useNavigate();
 
+    const [searchParams] = useSearchParams();
+
     const [tasks, setTasks] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     // filters
     const [search, setSearch] = useState("");
-    const [status, setStatus] = useState("");
+    const [status, setStatus] = useState(searchParams.get("status") || "");
 
     // User filter states
     const [selectedUser, setSelectedUser] = useState<any>(null);

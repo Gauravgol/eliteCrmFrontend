@@ -202,7 +202,7 @@
 
 // export default Projects;
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Projects.css";
@@ -229,6 +229,7 @@ interface Project {
 function Projects() {
   const navigate = useNavigate();
 
+  const [searchParams] = useSearchParams();
   const [projects, setProjects] = useState<Project[]>([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -238,7 +239,7 @@ function Projects() {
   const [error, setError] = useState("");
 
   // Filters
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState(searchParams.get("status") || "");
   const [selectedOwner, setSelectedOwner] = useState<any>(null);
   const [ownerSearch, setOwnerSearch] = useState("");
   const [ownerList, setOwnerList] = useState<any[]>([]);

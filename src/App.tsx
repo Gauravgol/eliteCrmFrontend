@@ -67,6 +67,8 @@ import Users from "./components/Users/Users";
 import ProtectedRoute from "./ProtectedRoute";
 import Tasks from "./components/Tasks/Tasks";
 import Chatpage from "./components/Chatpage/Chatpage";
+import { SocketProvider, useSocket } from "./context/SocketContext";
+import NotificationPopup from "./components/NotificationPopup/NotificationPopup";
 
 const Layout = () => {
   const [isCollapsed, setIsCollapsed] = useState(() => {
@@ -84,36 +86,46 @@ const Layout = () => {
 
   const toggleSidebar = () => setIsCollapsed(!isCollapsed);
 
+  const { notification, clearNotification } = useSocket();
+
   return (
     <>
       <Navbar isCollapsed={isCollapsed} toggleSidebar={toggleSidebar} />
       <Sidebar isCollapsed={isCollapsed} />
       <Outlet />
+      {notification && (
+        <NotificationPopup
+          text={notification.text}
+          onClose={clearNotification}
+        />
+      )}
     </>
   );
 };
 
 function App() {
   return (
-    <Routes>
-      {/* Public Route */}
-      <Route path="/" element={<Login />} />
+    <SocketProvider>
+      <Routes>
+        {/* Public Route */}
+        <Route path="/" element={<Login />} />
 
-      {/* Protected Routes */}
-      <Route element={<ProtectedRoute />}>
-        <Route element={<Layout />}>
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="projects" element={<Projects />} />
-          <Route path="projects/new" element={<NewProject />} />
-          <Route path="projects/:projectId" element={<ProjectDetails />} />
-          <Route path="projects/:projectId/create-task" element={<NewTask />} />
-          <Route path="task/:taskId" element={<TaskDetails />} />
-          <Route path="users" element={<Users />} />
-          <Route path="tasks" element={<Tasks />} />
-          <Route path="chat" element={<Chatpage />} />
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<Layout />}>
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="projects" element={<Projects />} />
+            <Route path="projects/new" element={<NewProject />} />
+            <Route path="projects/:projectId" element={<ProjectDetails />} />
+            <Route path="projects/:projectId/create-task" element={<NewTask />} />
+            <Route path="task/:taskId" element={<TaskDetails />} />
+            <Route path="users" element={<Users />} />
+            <Route path="tasks" element={<Tasks />} />
+            <Route path="chat" element={<Chatpage />} />
+          </Route>
         </Route>
-      </Route>
-    </Routes>
+      </Routes>
+    </SocketProvider>
   );
 }
 

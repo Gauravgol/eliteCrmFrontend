@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useSocket } from "../../context/SocketContext";
 
 
 export default function Login() {
@@ -10,6 +11,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { connectUser } = useSocket();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -38,6 +40,12 @@ export default function Login() {
 
         localStorage.setItem("token", apiResponseData.token);
         localStorage.setItem("user", JSON.stringify(apiResponseData.user));
+
+        // Connect socket immediately
+        if (apiResponseData.user?.id) {
+          connectUser(apiResponseData.user.id);
+        }
+
         console.log("Hi")
         navigate("/dashboard");
       } else {

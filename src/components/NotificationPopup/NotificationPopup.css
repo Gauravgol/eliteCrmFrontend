@@ -1,0 +1,70 @@
+.notification-popup {
+    position: fixed;
+    bottom: 25px;
+    right: 20px;
+    /* Moved to right */
+    width: 300px;
+    background: #1a1a1a;
+    /* Black theme background */
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border-left: 5px solid #ff9800;
+    z-index: 10000;
+    cursor: pointer;
+    animation: popupSlideInRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    color: #ffffff;
+    /* White text for black theme */
+}
+
+@keyframes popupSlideInRight {
+    from {
+        transform: translateX(100%) scale(0.8);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+}
+
+.notification-popup-content {
+    padding: 15px;
+}
+
+.notification-popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.notification-popup-header strong {
+    font-size: 0.95rem;
+    color: #ff9800;
+    /* Primary accent color for title */
+}
+
+.close-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    font-size: 1.2rem;
+    line-height: 1;
+    color: #adb5bd;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+}
+
+.notification-popup-body {
+    font-size: 0.88rem;
+    color: #cccccc;
+    /* Subtle grey for body text */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

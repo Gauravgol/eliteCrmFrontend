@@ -1,12 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { io, Socket } from "socket.io-client";
 import axios from "axios";
 import "./Chatpage.css";
+import { useSocket } from "../../context/SocketContext";
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 const API_URL = import.meta.env.VITE_API_BASE_URL;
-
-let socket: Socket;
 
 export default function Chatpage() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -24,36 +21,44 @@ export default function Chatpage() {
   const chatRef = useRef<HTMLDivElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  /* ================= SOCKET INIT ================= */
+  const { socket } = useSocket();
+
+  /* ================= SOCKET LISTENERS ================= */
 
   useEffect(() => {
-    socket = io(SOCKET_URL, { transports: ["websocket"] });
+    if (!socket) return;
 
     socket.on("receive_message", (msg) => {
-      setMessages((prev) => [...prev, msg]);
+      // Only append if it's the current selected chat room
+      const currentRoomId = [user.id, selectedUser?._id || ""].sort().join("_");
+      if (msg.roomId === currentRoomId) {
+        setMessages((prev) => [...prev, msg]);
+      }
     });
 
     return () => {
-      socket.disconnect();
+      socket.off("receive_message");
     };
-  }, []);
+  }, [socket, selectedUser, user.id]);
 
   // Auto-scroll to bottom on new message
   useEffect(() => {
     if (!loadingOld && chatRef.current) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messages]);
+  }, [messages, loadingOld]);
 
   /* ================= FETCH CHAT USERS ================= */
 
   const fetchChatUsers = async (searchText = "") => {
-    const res = await axios.get(`${API_URL}/getChatUsers`, {
-      params: { userId: user.id, search: searchText },
-    });
-
-    setUsers(res.data?.apiResponseData || []);
+    try {
+      const res = await axios.get(`${API_URL}/getChatUsers`, {
+        params: { userId: user.id, search: searchText },
+      });
+      setUsers(res.data?.apiResponseData || []);
+    } catch (error) {
+      console.error("Failed to fetch chat users", error);
+    }
   };
 
   useEffect(() => {
@@ -72,49 +77,56 @@ export default function Chatpage() {
   /* ================= LOAD MESSAGES ================= */
 
   const loadInitialMessages = async (otherUserId: string) => {
-    const res = await axios.get(`${API_URL}/getChatMessages`, {
-      params: {
-        userId: user.id,
-        otherUserId,
-        limit: 20,
-      },
-    });
+    try {
+      const res = await axios.get(`${API_URL}/getChatMessages`, {
+        params: {
+          userId: user.id,
+          otherUserId,
+          limit: 20,
+        },
+      });
 
-    const data = res.data?.apiResponseData || [];
-    setMessages(data.reverse());
-    setHasMore(data.length === 20);
-
-    // Scroll handled by useEffect
+      const data = res.data?.apiResponseData || [];
+      setMessages(data.reverse());
+      setHasMore(data.length === 20);
+    } catch (error) {
+      console.error("Failed to load initial messages", error);
+    }
   };
 
   const loadOlderMessages = async () => {
     if (!hasMore || loadingOld || messages.length === 0) return;
 
     setLoadingOld(true);
-
     const oldest = messages[0];
     const prevHeight = chatRef.current!.scrollHeight;
 
-    const res = await axios.get(`${API_URL}/getChatMessages`, {
-      params: {
-        userId: user.id,
-        otherUserId: selectedUser._id,
-        limit: 20,
-        before: oldest.createdAt,
-      },
-    });
+    try {
+      const res = await axios.get(`${API_URL}/getChatMessages`, {
+        params: {
+          userId: user.id,
+          otherUserId: selectedUser._id,
+          limit: 20,
+          before: oldest.createdAt,
+        },
+      });
 
-    const data = res.data?.apiResponseData || [];
-    if (data.length < 20) setHasMore(false);
+      const data = res.data?.apiResponseData || [];
+      if (data.length < 20) setHasMore(false);
 
-    setMessages((prev) => [...data.reverse(), ...prev]);
+      setMessages((prev) => [...data.reverse(), ...prev]);
 
-    setTimeout(() => {
-      const newHeight = chatRef.current!.scrollHeight;
-      chatRef.current!.scrollTop = newHeight - prevHeight;
-    }, 0);
-
-    setLoadingOld(false);
+      setTimeout(() => {
+        if (chatRef.current) {
+          const newHeight = chatRef.current.scrollHeight;
+          chatRef.current.scrollTop = newHeight - prevHeight;
+        }
+      }, 0);
+    } catch (error) {
+      console.error("Failed to load older messages", error);
+    } finally {
+      setLoadingOld(false);
+    }
   };
 
   /* ================= SCROLL ================= */
@@ -131,8 +143,11 @@ export default function Chatpage() {
     setSelectedUser(u);
     await loadInitialMessages(u._id);
 
-    const roomId = getRoomId(user.id, u._id);
-    socket.emit("join_room", { roomId });
+    if (socket) {
+      const roomId = getRoomId(user.id, u._id);
+      socket.emit("join_room", { roomId });
+      console.log("Joined room:", roomId);
+    }
   };
 
   /* ================= SEND MESSAGE ================= */
@@ -147,7 +162,9 @@ export default function Chatpage() {
       message,
     };
 
-    socket.emit("send_message", payload);
+    if (socket) {
+      socket.emit("send_message", payload);
+    }
     setMessage("");
   };
 
@@ -244,7 +261,6 @@ export default function Chatpage() {
                         </div>
                       </div>
                     </div>
-
                   );
                 })}
                 <div ref={chatEndRef} />

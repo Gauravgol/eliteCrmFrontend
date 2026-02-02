@@ -107,6 +107,7 @@
 //   );
 // }
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Dashboard.css";
 
@@ -117,6 +118,7 @@ type DashboardData = {
 };
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const userFromStorage = JSON.parse(localStorage.getItem("user") || "{}");
   const token = localStorage.getItem("token");
 
@@ -166,15 +168,35 @@ export default function Dashboard() {
   if (error) return <div className="error">{error}</div>;
   if (!user) return <div className="empty-state">No data found</div>;
 
-  const renderStats = (title: string, data: Record<string, number>) => {
+  const renderStats = (title: string, data: Record<string, number>, type: 'tasks' | 'projects') => {
     const max = Math.max(...Object.values(data), 1);
+
+    const handleCardClick = (key: string) => {
+      let statusParam = key;
+      if (key === "InProgress") statusParam = "INPROGRESS";
+      if (key === "QC") statusParam = "QCINPROGRESS";
+      // Generic normalizing for other common keys if needed
+      if (key === "ToDo") statusParam = "TODO";
+      if (key === "Complete") statusParam = "COMPLETE";
+
+      if (type === 'tasks') {
+        navigate(`/tasks?status=${statusParam}`);
+      } else {
+        navigate(`/projects?status=${statusParam}`);
+      }
+    };
 
     return (
       <div className="dashboard-section">
         <h4>{title}</h4>
         <div className="stats-grid">
           {Object.entries(data).map(([key, value]) => (
-            <div className="stat-card stat-hover" key={key}>
+            <div
+              className="stat-card stat-hover"
+              key={key}
+              onClick={() => handleCardClick(key)}
+              style={{ cursor: 'pointer' }}
+            >
               <span className="stat-label">{key}</span>
               <span className="stat-number">{value}</span>
               <div className="bar-track">
@@ -231,17 +253,17 @@ export default function Dashboard() {
         <>
           {(dashboard.role === "superAdmin" ||
             dashboard.role === "admin") && (
-            <>
-              {renderStats("Task Overview", dashboard.tasks)}
-              {renderStats("Project Overview", dashboard.projects)}
-            </>
-          )}
+              <>
+                {renderStats("Task Overview", dashboard.tasks, 'tasks')}
+                {renderStats("Project Overview", dashboard.projects, 'projects')}
+              </>
+            )}
 
           {dashboard.role === "employee" &&
-            renderStats("My Tasks", dashboard.tasks)}
+            renderStats("My Tasks", dashboard.tasks, 'tasks')}
 
           {dashboard.role === "client" &&
-            renderStats("My Projects", dashboard.projects)}
+            renderStats("My Projects", dashboard.projects, 'projects')}
         </>
       )}
     </div>
