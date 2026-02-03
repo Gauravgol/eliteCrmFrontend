@@ -1,359 +1,379 @@
  /* ================= HEADER ================= */
-  
-  .task-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-  
-  .task-header button {
-    background: transparent;
-    border: none;
-    font-size: 14px;
-    cursor: pointer;
-    color: #1565c0;
-  }
-  
-  .task-header h2 {
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-  
-  .task-header .muted {
-    font-size: 14px;
-    color: #666;
-  }
-  
-  /* ================= BODY LAYOUT ================= */
-  
-  .task-body {
-    display: grid;
-    grid-template-columns: 2.5fr 1fr;
-    gap: 20px;
-  }
-  
-  /* ================= LEFT PANEL ================= */
-  
-  .task-main {
-    background: #fff;
-    padding: 16px;
-    border-radius: 8px;
-  }
-  
-  /* Section headings */
-  .task-main h4 {
-    margin-top: 0;
-    margin-bottom: 8px;
-    font-weight: 600;
-  }
-  
-  /* Description */
-  .task-desc {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 16px;
-    line-height: 1.6;
-  }
-  
-  /* ================= ATTACHMENTS ================= */
-  
-  .attachment {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
-    margin-bottom: 6px;
-  }
-  
-  .attachment a {
-    color: #1565c0;
-    text-decoration: none;
-  }
-  
-  .attachment a:hover {
-    text-decoration: underline;
-  }
-  
-  /* ================= COMMENTS ================= */
-  
-  .comment {
-    border-top: 1px solid #eee;
-    padding-top: 8px;
-    margin-top: 8px;
-  }
-  
-  .comment strong {
-    font-size: 14px;
-  }
-  
-  .comment p {
-    font-size: 14px;
-    color: #555;
-    margin-top: 4px;
-  }
-  
-  /* ================= RIGHT PANEL ================= */
-  
-  .task-info {
-    background: #fff;
-    padding: 16px;
-    border-radius: 8px;
-    height: fit-content;
-  }
-  
-  .task-info .info-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    font-size: 14px;
-  }
-  
-  .task-info label {
-    font-weight: 500;
-    color: #444;
-  }
-  
-  /* Status badges (reuse ProjectDetails logic) */
-  .task-info .status {
-    font-size: 12px;
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-weight: 500;
-  }
-  
-  .task-info .status.TODO {
-    background: #e3f2fd;
-    color: #1565c0;
-  }
-  
-  .task-info .status.IN_PROGRESS,
-  .task-info .status.INPROGRESS {
-    background: #fff3e0;
-    color: #ef6c00;
-  }
-  
-  .task-info .status.DONE {
-    background: #e8f5e9;
-    color: #2e7d32;
-  }
-  
-  .task-info .status.HOLD {
-    background: #f3e5f5;
-    color: #6a1b9a;
-  }
-  
-  /* Priority badges */
-  .task-info .priority {
-    font-size: 12px;
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-weight: 500;
-  }
-  
-  .task-info .priority.HIGH {
-    background: #ffebee;
-    color: #c62828;
-  }
-  
-  .task-info .priority.MEDIUM {
-    background: #fff8e1;
-    color: #ef6c00;
-  }
-  
-  .task-info .priority.LOW {
-    background: #e8f5e9;
-    color: #2e7d32;
-  }
-  
-  /* ================= STATES ================= */
-  
-  .loading,
-  .error,
-  .empty-state {
-    padding: 40px;
-    text-align: center;
-    color: #666;
-  }
-  
-  /* ================= RESPONSIVE ================= */
-  
-  @media (max-width: 900px) {
-    .task-body {
-      grid-template-columns: 1fr;
-    }
-  
-    .task-info {
-      order: -1;
-    }
-  }
-  
-  .editable {
-    cursor: pointer;
-  }
-  
-  .inline-input {
-    width: 100%;
-    font-size: 22px;
-    font-weight: 600;
-    padding: 4px;
-  }
-  
-  .inline-textarea {
-    width: 100%;
-    min-height: 80px;
-    padding: 8px;
-    font-size: 14px;
-  }
-  
-  .comment-box {
-    width: 100%;
-    height: 50px;
-    margin-top: 8px;
-    padding: 6px;
-    font-size: 13px;
-  }
-  
-  .comment-btn {
-    margin-top: 6px;
-    padding: 4px 10px;
-    font-size: 13px;
-  }
-  .section-header {
-    font-weight: 600;
-    cursor: pointer;
-    user-select: none;
-    margin: 12px 0 6px;
-    color: #333;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  
-  .section-header:hover {
-    color: #1565c0;
-  }
-  .attachment-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    color: #1565c0;
-    text-decoration: none;
-  }
-  
-  .attachment-link:hover {
-    text-decoration: underline;
-  }
-  
-  .attachment-icon {
-    font-size: 22px;   /* 👈 LARGE ICON */
-    line-height: 1;
-  }
-  .attach-btn {
-    display: inline-block;
-    margin-top: 8px;
-    font-size: 13px;
-    color: #1565c0;
-    cursor: pointer;
-    transition: color 0.2s ease, background-color 0.2s ease;
-    padding: 4px 6px;
-    border-radius: 4px;
-  }
-  
-  .attach-btn:hover {
-    background-color: #e3f2fd; /* light blue hover */
-    color: #0d47a1;
-  }
-  /* ===== Status Dropdown Base ===== */
-.status-select {
-  padding: 6px 10px;
-  border-radius: 8px;
-  font-weight: 600;
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
 
-/* ===== Status Colors ===== */
+ .task-header {
+   display: flex;
+   align-items: center;
+   gap: 12px;
+   margin-bottom: 20px;
+ }
 
-/* TODO */
-.status-todo {
-  background: #e9ecef;
-  color: #495057;
-  border-color: #ced4da;
-}
+ .task-header button {
+   background: transparent;
+   border: none;
+   font-size: 14px;
+   cursor: pointer;
+   color: #1565c0;
+ }
 
-/* IN PROGRESS */
-.status-inprogress {
-  background: #e7f1ff;
-  color: #0d6efd;
-  border-color: #0d6efd;
-}
+ .task-header h2 {
+   font-weight: 600;
+   margin-bottom: 4px;
+ }
 
-/* COMPLETE */
-.status-complete {
-  background: #e6f4ea;
-  color: #198754;
-  border-color: #198754;
-}
+ .task-header .muted {
+   font-size: 14px;
+   color: #666;
+ }
 
-/* HOLD */
-.status-hold {
-  background: #fdecea;
-  color: #dc3545;
-  border-color: #dc3545;
-}
+ /* ================= BODY LAYOUT ================= */
 
-/* QA IN PROGRESS */
-.status-qainprogress {
-  background: #fff4e6;
-  color: #fd7e14;
-  border-color: #fd7e14;
-}
+ .task-body {
+   display: grid;
+   grid-template-columns: 2.5fr 1fr;
+   gap: 20px;
+ }
 
-/* QA COMPLETE */
-.status-qacomplete {
-  background: #e6fffa;
-  color: #20c997;
-  border-color: #20c997;
-}
+ /* ================= LEFT PANEL ================= */
 
-/* QC IN PROGRESS */
-.status-qcinprogress {
-  background: #f3e8ff;
-  color: #6f42c1;
-  border-color: #6f42c1;
-}
+ .task-main {
+   background: #fff;
+   padding: 16px;
+   border-radius: 8px;
+ }
 
-/* QC COMPLETE */
-.status-qccomplete {
-  background: #e6f4ea;
-  color: #146c43;
-  border-color: #146c43;
-}
+ /* Section headings */
+ .task-main h4 {
+   margin-top: 0;
+   margin-bottom: 8px;
+   font-weight: 600;
+ }
 
-/* ===== Hover & Focus ===== */
-.status-select:hover {
-  opacity: 0.95;
-}
+ /* Description */
+ .task-desc {
+   font-size: 14px;
+   color: #555;
+   margin-bottom: 16px;
+   line-height: 1.6;
+ }
 
-.status-select:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
-}
+ /* ================= ATTACHMENTS ================= */
 
-/* ===== ASSIGNED TO – SAME STYLE AS STATUS ===== */
+ .attachment {
+   display: flex;
+   align-items: center;
+   gap: 6px;
+   font-size: 14px;
+   margin-bottom: 6px;
+ }
 
-/* .assign-input {
+ .attachment a {
+   color: #1565c0;
+   text-decoration: none;
+ }
+
+ .attachment a:hover {
+   text-decoration: underline;
+ }
+
+ /* ================= COMMENTS ================= */
+
+ .comment {
+   border-top: 1px solid #eee;
+   padding-top: 10px;
+   margin-top: 12px;
+ }
+
+ .comment-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 4px;
+ }
+
+ .comment strong {
+   font-size: 14px;
+   color: #333;
+ }
+
+ .comment-time {
+   font-size: 12px;
+   color: #888;
+ }
+
+ .comment p {
+   font-size: 14px;
+   color: #444;
+   margin-top: 0;
+   line-height: 1.5;
+ }
+
+ /* ================= RIGHT PANEL ================= */
+
+ .task-info {
+   background: #fff;
+   padding: 16px;
+   border-radius: 8px;
+   height: fit-content;
+ }
+
+ .task-info .info-row {
+   display: flex;
+   justify-content: space-between;
+   margin-bottom: 10px;
+   font-size: 14px;
+ }
+
+ .task-info label {
+   font-weight: 500;
+   color: #444;
+ }
+
+ /* Status badges (reuse ProjectDetails logic) */
+ .task-info .status {
+   font-size: 12px;
+   padding: 3px 8px;
+   border-radius: 12px;
+   font-weight: 500;
+ }
+
+ .task-info .status.TODO {
+   background: #e3f2fd;
+   color: #1565c0;
+ }
+
+ .task-info .status.IN_PROGRESS,
+ .task-info .status.INPROGRESS {
+   background: #fff3e0;
+   color: #ef6c00;
+ }
+
+ .task-info .status.DONE {
+   background: #e8f5e9;
+   color: #2e7d32;
+ }
+
+ .task-info .status.HOLD {
+   background: #f3e5f5;
+   color: #6a1b9a;
+ }
+
+ /* Priority badges */
+ .task-info .priority {
+   font-size: 12px;
+   padding: 3px 8px;
+   border-radius: 12px;
+   font-weight: 500;
+ }
+
+ .task-info .priority.HIGH {
+   background: #ffebee;
+   color: #c62828;
+ }
+
+ .task-info .priority.MEDIUM {
+   background: #fff8e1;
+   color: #ef6c00;
+ }
+
+ .task-info .priority.LOW {
+   background: #e8f5e9;
+   color: #2e7d32;
+ }
+
+ /* ================= STATES ================= */
+
+ .loading,
+ .error,
+ .empty-state {
+   padding: 40px;
+   text-align: center;
+   color: #666;
+ }
+
+ /* ================= RESPONSIVE ================= */
+
+ @media (max-width: 900px) {
+   .task-body {
+     grid-template-columns: 1fr;
+   }
+
+   .task-info {
+     order: -1;
+   }
+ }
+
+ .editable {
+   cursor: pointer;
+ }
+
+ .inline-input {
+   width: 100%;
+   font-size: 22px;
+   font-weight: 600;
+   padding: 4px;
+ }
+
+ .inline-textarea {
+   width: 100%;
+   min-height: 80px;
+   padding: 8px;
+   font-size: 14px;
+ }
+
+ .comment-box {
+   width: 100%;
+   height: 50px;
+   margin-top: 8px;
+   padding: 6px;
+   font-size: 13px;
+ }
+
+ .comment-btn {
+   margin-top: 6px;
+   padding: 4px 10px;
+   font-size: 13px;
+ }
+
+ .section-header {
+   font-weight: 600;
+   cursor: pointer;
+   user-select: none;
+   margin: 12px 0 6px;
+   color: #333;
+   display: flex;
+   align-items: center;
+   gap: 6px;
+ }
+
+ .section-header:hover {
+   color: #1565c0;
+ }
+
+ .attachment-link {
+   display: inline-flex;
+   align-items: center;
+   gap: 8px;
+   font-size: 14px;
+   color: #1565c0;
+   text-decoration: none;
+ }
+
+ .attachment-link:hover {
+   text-decoration: underline;
+ }
+
+ .attachment-icon {
+   font-size: 22px;
+   /* 👈 LARGE ICON */
+   line-height: 1;
+ }
+
+ .attach-btn {
+   display: inline-block;
+   margin-top: 8px;
+   font-size: 13px;
+   color: #1565c0;
+   cursor: pointer;
+   transition: color 0.2s ease, background-color 0.2s ease;
+   padding: 4px 6px;
+   border-radius: 4px;
+ }
+
+ .attach-btn:hover {
+   background-color: #e3f2fd;
+   /* light blue hover */
+   color: #0d47a1;
+ }
+
+ /* ===== Status Dropdown Base ===== */
+ .status-select {
+   padding: 6px 10px;
+   border-radius: 8px;
+   font-weight: 600;
+   border: 1px solid transparent;
+   cursor: pointer;
+   transition: all 0.2s ease;
+ }
+
+ /* ===== Status Colors ===== */
+
+ /* TODO */
+ .status-todo {
+   background: #e9ecef;
+   color: #495057;
+   border-color: #ced4da;
+ }
+
+ /* IN PROGRESS */
+ .status-inprogress {
+   background: #e7f1ff;
+   color: #0d6efd;
+   border-color: #0d6efd;
+ }
+
+ /* COMPLETE */
+ .status-complete {
+   background: #e6f4ea;
+   color: #198754;
+   border-color: #198754;
+ }
+
+ /* HOLD */
+ .status-hold {
+   background: #fdecea;
+   color: #dc3545;
+   border-color: #dc3545;
+ }
+
+ /* QA IN PROGRESS */
+ .status-qainprogress {
+   background: #fff4e6;
+   color: #fd7e14;
+   border-color: #fd7e14;
+ }
+
+ /* QA COMPLETE */
+ .status-qacomplete {
+   background: #e6fffa;
+   color: #20c997;
+   border-color: #20c997;
+ }
+
+ /* QC IN PROGRESS */
+ .status-qcinprogress {
+   background: #f3e8ff;
+   color: #6f42c1;
+   border-color: #6f42c1;
+ }
+
+ /* QC COMPLETE */
+ .status-qccomplete {
+   background: #e6f4ea;
+   color: #146c43;
+   border-color: #146c43;
+ }
+
+ /* ===== Hover & Focus ===== */
+ .status-select:hover {
+   opacity: 0.95;
+ }
+
+ .status-select:focus {
+   outline: none;
+   box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
+ }
+
+ /* ===== ASSIGNED TO – SAME STYLE AS STATUS ===== */
+
+ /* .assign-input {
   background: #e7f1ff;
   color: #0d6efd;
   border-color: #0d6efd;
   width: auto;
 } */
 
-/* When no user selected (input mode) */
-/* .assign-input input {
+ /* When no user selected (input mode) */
+ /* .assign-input input {
   border: none;
   outline: none;
   background: transparent;
@@ -362,167 +382,166 @@
   min-width: 80px;
 } */
 
-/* Assigned user badge */
-.assign-chip {
-  background: #e7f1ff;
-  color: #0d6efd;
-  border: 1px solid #0d6efd;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 13px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
+ /* Assigned user badge */
+ .assign-chip {
+   background: #e7f1ff;
+   color: #0d6efd;
+   border: 1px solid #0d6efd;
+   padding: 4px 10px;
+   border-radius: 999px;
+   font-size: 13px;
+   display: inline-flex;
+   align-items: center;
+   gap: 6px;
+ }
 
-/* Remove icon */
-.assign-chip span {
-  cursor: pointer;
-  font-weight: bold;
-}
+ /* Remove icon */
+ .assign-chip span {
+   cursor: pointer;
+   font-weight: bold;
+ }
 
-/* Dropdown */
-.assign-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: auto;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  list-style: none;
-  margin-top: 6px;
-  padding: 4px 0;
-  max-height: 180px;
-  overflow-y: auto;
-  z-index: 1000;
-}
+ /* Dropdown */
+ .assign-dropdown {
+   position: absolute;
+   top: 100%;
+   left: 0;
+   width: auto;
+   background: #fff;
+   border: 1px solid #ddd;
+   border-radius: 8px;
+   list-style: none;
+   margin-top: 6px;
+   padding: 4px 0;
+   max-height: 180px;
+   overflow-y: auto;
+   z-index: 1000;
+ }
 
-.assign-dropdown li {
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: 14px;
-}
+ .assign-dropdown li {
+   padding: 8px 12px;
+   cursor: pointer;
+   font-size: 14px;
+ }
 
-.assign-dropdown li:hover {
-  background: #f0f4ff;
-}
-
-
-/* ===== COMMENT @MENTION ===== */
-
-.comment-mention-wrapper {
-  position: relative;
-}
-
-.mention-dropdown {
-  position: absolute;
-  bottom: 100%;
-  left: 0;
-  width: 220px;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  list-style: none;
-  padding: 4px 0;
-  max-height: 160px;
-  overflow-y: auto;
-  z-index: 1000;
-}
-
-.mention-dropdown li {
-  padding: 8px 10px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.mention-dropdown li:hover {
-  background: #f0f4ff;
-}
-
-.mention {
-  background: #e7f1ff;
-  color: #0d6efd;
-  padding: 2px 6px;
-  border-radius: 6px;
-  font-weight: 600;
-}
-
-/* ===== JIRA STYLE ATTACHMENTS (TASK DETAILS) ===== */
-
-.attachments-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 14px;
-  margin-top: 8px;
-}
-
-.attachment-card {
-  text-decoration: none;
-  color: inherit;
-}
-
-/* SAME PREVIEW BOX FOR PDF & IMAGE */
-.attachment-preview {
-  width: 100%;
-  height: 120px;
-  border: 1px solid #dfe1e6;
-  border-radius: 6px;
-  background: #fafafa;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  overflow: hidden;
-  transition: all 0.2s ease;
-}
-
-.attachment-card:hover .attachment-preview {
-  border-color: #0052cc;
-  box-shadow: 0 4px 10px rgba(9, 30, 66, 0.25);
-}
-
-/* IMAGE */
-.attachment-preview img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* PDF (FULL ICON CENTERED) */
-.attachment-pdf {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.pdf-svg-icon {
-  width: 48px;
-  height: 48px;
-  color: #de350b; /* Jira PDF red */
-}
-
-/* FILE NAME BELOW BOX */
-.attachment-name {
-  margin-top: 6px;
-  font-size: 12px;
-  color: #172b4d;
-  text-align: center;
-
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-
-  overflow: hidden;
-  word-break: break-word;
-}
-
-/* HIDE OLD ROW-STYLE ATTACHMENTS */
-.attachment,
-.attachment-link,
-.attachment-icon {
-  display: none;
-}
+ .assign-dropdown li:hover {
+   background: #f0f4ff;
+ }
 
 
+ /* ===== COMMENT @MENTION ===== */
+
+ .comment-mention-wrapper {
+   position: relative;
+ }
+
+ .mention-dropdown {
+   position: absolute;
+   bottom: 100%;
+   left: 0;
+   width: 220px;
+   background: #fff;
+   border: 1px solid #ddd;
+   border-radius: 6px;
+   list-style: none;
+   padding: 4px 0;
+   max-height: 160px;
+   overflow-y: auto;
+   z-index: 1000;
+ }
+
+ .mention-dropdown li {
+   padding: 8px 10px;
+   cursor: pointer;
+   font-size: 14px;
+ }
+
+ .mention-dropdown li:hover {
+   background: #f0f4ff;
+ }
+
+ .mention {
+   background: #e7f1ff;
+   color: #0d6efd;
+   padding: 2px 6px;
+   border-radius: 6px;
+   font-weight: 600;
+ }
+
+ /* ===== JIRA STYLE ATTACHMENTS (TASK DETAILS) ===== */
+
+ .attachments-grid {
+   display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+   gap: 14px;
+   margin-top: 8px;
+ }
+
+ .attachment-card {
+   text-decoration: none;
+   color: inherit;
+ }
+
+ /* SAME PREVIEW BOX FOR PDF & IMAGE */
+ .attachment-preview {
+   width: 100%;
+   height: 120px;
+   border: 1px solid #dfe1e6;
+   border-radius: 6px;
+   background: #fafafa;
+
+   display: flex;
+   align-items: center;
+   justify-content: center;
+
+   overflow: hidden;
+   transition: all 0.2s ease;
+ }
+
+ .attachment-card:hover .attachment-preview {
+   border-color: #0052cc;
+   box-shadow: 0 4px 10px rgba(9, 30, 66, 0.25);
+ }
+
+ /* IMAGE */
+ .attachment-preview img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+ }
+
+ /* PDF (FULL ICON CENTERED) */
+ .attachment-pdf {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+ }
+
+ .pdf-svg-icon {
+   width: 48px;
+   height: 48px;
+   color: #de350b;
+   /* Jira PDF red */
+ }
+
+ /* FILE NAME BELOW BOX */
+ .attachment-name {
+   margin-top: 6px;
+   font-size: 12px;
+   color: #172b4d;
+   text-align: center;
+
+   display: -webkit-box;
+   -webkit-line-clamp: 2;
+   -webkit-box-orient: vertical;
+
+   overflow: hidden;
+   word-break: break-word;
+ }
+
+ /* HIDE OLD ROW-STYLE ATTACHMENTS */
+ .attachment,
+ .attachment-link,
+ .attachment-icon {
+   display: none;
+ }

@@ -379,13 +379,15 @@ export default function TaskDetails() {
                 ) : (
                   task.comments.map((c: any) => (
                     <div key={c._id} className="comment">
-                      <strong>{c.commenterName}</strong>
-                      <span className="comment-time">
-                        {moment
-                          .utc(c.commentedAt)
-                          .tz("Asia/Kolkata")
-                          .format("DD MMM YYYY, hh:mm A")}
-                      </span>
+                      <div className="comment-header">
+                        <strong>{c.commenterName}</strong>
+                        <span className="comment-time">
+                          {moment
+                            .utc(c.commentedAt)
+                            .tz("Asia/Kolkata")
+                            .format("MMM D, h:mm A")}
+                        </span>
+                      </div>
                       <p
                         dangerouslySetInnerHTML={{
                           __html: c.comment.replace(

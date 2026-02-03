@@ -246,6 +246,9 @@ function Projects() {
   const [showOwnerDropdown, setShowOwnerDropdown] = useState(false);
   const ownerDropdownRef = useRef<HTMLDivElement>(null);
 
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const isClient = user.role?.toLowerCase() === "client";
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -302,12 +305,14 @@ function Projects() {
       setLoading(true);
       setError("");
 
+      const ownerFilter = isClient ? user.id : selectedOwner?._id;
+
       const data = await getProjectsApi({
         search,
         page: currentPage,
         limit: itemsPerPage,
         status,
-        owner: selectedOwner?._id,
+        owner: ownerFilter,
       });
 
       setProjects(data.list || []);
@@ -381,44 +386,46 @@ function Projects() {
               <option value="HOLD">HOLD</option>
             </select>
 
-            {/* OWNER FILTER */}
-            <div className="owner-filter-wrapper" ref={ownerDropdownRef}>
-              <div className="owner-input-group">
-                {selectedOwner && (
-                  <span className="selected-owner-chip">
-                    {selectedOwner.name}
-                    <button onClick={clearOwner}>×</button>
-                  </span>
-                )}
-                {!selectedOwner && (
-                  <input
-                    placeholder="Filter by Owner..."
-                    value={ownerSearch}
-                    onChange={handleOwnerSearchChange}
-                    onFocus={() => {
-                      setShowOwnerDropdown(true);
-                      if (ownerList.length === 0) fetchOwners("");
-                    }}
-                    className="owner-search-input"
-                  />
-                )}
-              </div>
-
-              {showOwnerDropdown && (
-                <div className="owner-dropdown">
-                  {ownerList.length === 0 ? (
-                    <div className="dropdown-item no-results">No owners found</div>
-                  ) : (
-                    ownerList.map(u => (
-                      <div key={u._id} className="dropdown-item" onClick={() => selectOwner(u)}>
-                        <div className="owner-name">{u.name}</div>
-                        <div className="owner-email">{u.email}</div>
-                      </div>
-                    ))
+            {/* OWNER FILTER - Hidden for Clients */}
+            {!isClient && (
+              <div className="owner-filter-wrapper" ref={ownerDropdownRef}>
+                <div className="owner-input-group">
+                  {selectedOwner && (
+                    <span className="selected-owner-chip">
+                      {selectedOwner.name}
+                      <button onClick={clearOwner}>×</button>
+                    </span>
+                  )}
+                  {!selectedOwner && (
+                    <input
+                      placeholder="Filter by Owner..."
+                      value={ownerSearch}
+                      onChange={handleOwnerSearchChange}
+                      onFocus={() => {
+                        setShowOwnerDropdown(true);
+                        if (ownerList.length === 0) fetchOwners("");
+                      }}
+                      className="owner-search-input"
+                    />
                   )}
                 </div>
-              )}
-            </div>
+
+                {showOwnerDropdown && (
+                  <div className="owner-dropdown">
+                    {ownerList.length === 0 ? (
+                      <div className="dropdown-item no-results">No owners found</div>
+                    ) : (
+                      ownerList.map(u => (
+                        <div key={u._id} className="dropdown-item" onClick={() => selectOwner(u)}>
+                          <div className="owner-name">{u.name}</div>
+                          <div className="owner-email">{u.email}</div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <button
@@ -431,7 +438,7 @@ function Projects() {
 
         {/* ================= PROJECT LIST ================= */}
         <div className="projects-table-wrapper">
-          <h4 className="projects-title">Projects</h4>
+          {/* <h4 className="projects-title">Projects</h4> */}
 
           {loading ? (
             <div className="text-center py-5">Loading projects...</div>
@@ -462,7 +469,7 @@ function Projects() {
 
                   <div className="col-owner">
                     <span className="owner-badge">
-                      👤 {p.owner?.name || "Unknown"}
+                      {p.owner?.name || "Unknown"}
                     </span>
                   </div>
 
