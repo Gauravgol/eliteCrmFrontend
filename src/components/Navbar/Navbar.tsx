@@ -7,6 +7,7 @@ import "./Navbar.css";
 import moment from "moment";
 import { getNotifications, markNotificationsAsRead } from "../../api/notification.api";
 import { useSocket } from "../../context/SocketContext";
+import { useTheme } from "../../context/ThemeContext";
 
 interface NavbarProps {
   isCollapsed: boolean;
@@ -27,6 +28,7 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
 
   const navigate = useNavigate();
   const listRef = useRef<HTMLDivElement>(null);
+  const { theme, toggleTheme } = useTheme();
 
   const userId = JSON.parse(localStorage.getItem("user") || "{}");
 
@@ -227,6 +229,10 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
             <div className="profile-dropdown">
               <div className="dropdown-item">Profile</div>
               <div className="dropdown-item">Settings</div>
+              <div className="dropdown-item theme-toggle" onClick={(e) => { e.stopPropagation(); toggleTheme(); }}>
+                <i className={`bi ${theme === "light" ? "bi-moon-fill" : "bi-sun-fill"}`}></i>
+                {theme === "light" ? " Dark Mode" : " Light Mode"}
+              </div>
               <div className="dropdown-item logout" onClick={() => handleLogout()}>
                 Logout
               </div>

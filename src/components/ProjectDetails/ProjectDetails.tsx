@@ -382,10 +382,15 @@
 import { useEffect, useState, useRef } from "react";
 import "./ProjectDetails.css";
 import { useParams, useNavigate } from "react-router-dom";
-import { generateUrn } from "../../utils/generateUrn";
 import { toast } from "react-toastify";
 import moment from "moment-timezone";
 import RichTextEditor from "../RichTextEditor/RichTextEditor";
+import {
+  getProjectsApi,
+  updateProjectApi,
+  tagUserApi,
+} from "../../api/projects.api";
+import { getTasksApi } from "../../api/tasks.api";
 
 export default function ProjectDetails() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -395,9 +400,12 @@ export default function ProjectDetails() {
   const [tasks, setTasks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const isAdmin = ["admin", "superAdmin"].includes(currentUser.role);
 
   // toggles
   const [showDescription, setShowDescription] = useState(true);
+  const [showProjectDetails, setShowProjectDetails] = useState(true);
   const [showAttachments, setShowAttachments] = useState(true);
   const [showComments, setShowComments] = useState(true);
 
@@ -408,6 +416,10 @@ export default function ProjectDetails() {
   const [commentText, setCommentText] = useState("");
   // const [uploading, setUploading] = useState(false);
   const [showTasks, setShowTasks] = useState(true);
+
+  // project technical details edit
+  const [editingDetails, setEditingDetails] = useState(false);
+  const [detailsDraft, setDetailsDraft] = useState<any>({});
 
 
   // const [mentionSearch, setMentionSearch] = useState("");
@@ -435,51 +447,39 @@ export default function ProjectDetails() {
   };
 
   const fetchProject = async () => {
-    const res = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/getProjects?projectId=${projectId}`,
-      { headers: { urn: generateUrn(13) } }
-    );
-    const json = await res.json();
-    setProject(json?.apiResponseData?.list?.[0]);
+    const data: any = await getProjectsApi({ projectId });
+    setProject(data.list?.[0]);
   };
 
   const fetchTasks = async () => {
-    const res = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/getTask?projectId=${projectId}`,
-      { headers: { urn: generateUrn(13) } }
-    );
-    const json = await res.json();
-    setTasks(json?.apiResponseData?.list || []);
+    const data: any = await getTasksApi({ projectId: projectId! });
+    setTasks(data.list || []);
   };
 
   const updateProject = async (payload: any, isFormData = false) => {
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/updateProject`,
-        {
-          method: "PUT",
-          headers: isFormData
-            ? { urn: generateUrn(13) }
-            : {
-              "Content-Type": "application/json",
-              urn: generateUrn(13),
-            },
-          body: isFormData
-            ? payload
-            : JSON.stringify({
-              projectId,
-              userId: USER_ID,
-              ...payload,
-            }),
-        }
+      await updateProjectApi(
+        isFormData ? payload : { projectId, userId: currentUser.id, ...payload },
+        isFormData
       );
-
-      const json = await res.json();
-      if (json?.responseCode !== "200") throw new Error();
       fetchProject();
     } catch {
       toast.error("Update failed");
     }
+  };
+
+  const handleDetailsEdit = () => {
+    setDetailsDraft(project.projectDetails || {});
+    setEditingDetails(true);
+  };
+
+  const handleDetailsSave = async () => {
+    await updateProject({
+      projectDetails: {
+        ...project.projectDetails, ...detailsDraft
+      },
+    });
+    setEditingDetails(false);
   };
 
   const uploadAttachments = async (files: FileList | null) => {
@@ -516,12 +516,8 @@ export default function ProjectDetails() {
 
   const fetchUsersForMention = async (search: string) => {
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/tagUser?search=${search}`,
-        { headers: { urn: generateUrn(13) } }
-      );
-      const json = await res.json();
-      setMentionList(json?.apiResponseData?.list || []);
+      const data: any = await tagUserApi(search);
+      setMentionList(data.list || []);
     } catch {
       toast.error("Failed to load users");
     }
@@ -614,6 +610,199 @@ export default function ProjectDetails() {
                   }}
                 />
               ))}
+
+            {/* PROJECT DETAILS (TECHNICAL) */}
+            <div
+              className="section-header"
+              onClick={() => setShowProjectDetails((v) => !v)}
+            >
+              <span>{showProjectDetails ? "▾" : "▸"} Project Details</span>
+            </div>
+
+            {showProjectDetails && (
+              <div className="project-details-card">
+                {editingDetails ? (
+                  <>
+                    <div className="details-grid">
+                      <div className="details-item">
+                        <label>Homeowner Name</label>
+                        <input
+                          type="text"
+                          value={detailsDraft.homeownerName || ""}
+                          onChange={(e) =>
+                            setDetailsDraft({
+                              ...detailsDraft,
+                              homeownerName: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="details-item">
+                        <label>Estimated Production</label>
+                        <input
+                          type="text"
+                          value={detailsDraft.estimatedProduction || ""}
+                          onChange={(e) =>
+                            setDetailsDraft({
+                              ...detailsDraft,
+                              estimatedProduction: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="details-item">
+                        <label>Panel Modules & Qty</label>
+                        <input
+                          type="text"
+                          value={detailsDraft.panelModulesQuantity || ""}
+                          onChange={(e) =>
+                            setDetailsDraft({
+                              ...detailsDraft,
+                              panelModulesQuantity: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="details-item">
+                        <label>Inverter Model & Qty</label>
+                        <input
+                          type="text"
+                          value={detailsDraft.inverterModelQuantity || ""}
+                          onChange={(e) =>
+                            setDetailsDraft({
+                              ...detailsDraft,
+                              inverterModelQuantity: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="details-item">
+                        <label>Battery (Y/N)</label>
+                        <select
+                          value={detailsDraft.battery || "No"}
+                          onChange={(e) =>
+                            setDetailsDraft({
+                              ...detailsDraft,
+                              battery: e.target.value,
+                            })
+                          }
+                        >
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                        </select>
+                      </div>
+                      <div className="details-item">
+                        <label>Meter Number</label>
+                        <input
+                          type="text"
+                          value={detailsDraft.meterNumber || ""}
+                          onChange={(e) =>
+                            setDetailsDraft({
+                              ...detailsDraft,
+                              meterNumber: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="details-item">
+                        <label>Utility Name</label>
+                        <input
+                          type="text"
+                          value={detailsDraft.utilityName || ""}
+                          onChange={(e) =>
+                            setDetailsDraft({
+                              ...detailsDraft,
+                              utilityName: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="details-item">
+                        <label>Roof (Pitch/Flat)</label>
+                        <select
+                          value={detailsDraft.roof || "Pitch"}
+                          onChange={(e) =>
+                            setDetailsDraft({
+                              ...detailsDraft,
+                              roof: e.target.value,
+                            })
+                          }
+                        >
+                          <option value="Pitch">Pitch</option>
+                          <option value="Flat">Flat</option>
+                        </select>
+                      </div>
+                      <div className="details-item">
+                        <label>AHJ Name</label>
+                        <input
+                          type="text"
+                          value={detailsDraft.ahjName || ""}
+                          onChange={(e) =>
+                            setDetailsDraft({
+                              ...detailsDraft,
+                              ahjName: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className="edit-actions" style={{ marginTop: "20px" }}>
+                      <button className="btn-save" onClick={handleDetailsSave}>
+                        Save
+                      </button>
+                      <button
+                        className="btn-cancel"
+                        onClick={() => setEditingDetails(false)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <div
+                    className={`details-grid ${isAdmin ? "editable-grid" : ""}`}
+                    onClick={() => isAdmin && handleDetailsEdit()}
+                  >
+                    <div className="details-item">
+                      <label>Homeowner Name</label>
+                      <p>{project.projectDetails?.homeownerName || "-"}</p>
+                    </div>
+                    <div className="details-item">
+                      <label>Estimated Production</label>
+                      <p>{project.projectDetails?.estimatedProduction || "-"}</p>
+                    </div>
+                    <div className="details-item">
+                      <label>Panel Modules & Qty</label>
+                      <p>{project.projectDetails?.panelModulesQuantity || "-"}</p>
+                    </div>
+                    <div className="details-item">
+                      <label>Inverter Model & Qty</label>
+                      <p>{project.projectDetails?.inverterModelQuantity || "-"}</p>
+                    </div>
+                    <div className="details-item">
+                      <label>Battery (Y/N)</label>
+                      <p>{project.projectDetails?.battery || "-"}</p>
+                    </div>
+                    <div className="details-item">
+                      <label>Meter Number</label>
+                      <p>{project.projectDetails?.meterNumber || "-"}</p>
+                    </div>
+                    <div className="details-item">
+                      <label>Utility Name</label>
+                      <p>{project.projectDetails?.utilityName || "-"}</p>
+                    </div>
+                    <div className="details-item">
+                      <label>Roof (Pitch/Flat)</label>
+                      <p>{project.projectDetails?.roof || "-"}</p>
+                    </div>
+                    <div className="details-item">
+                      <label>AHJ Name</label>
+                      <p>{project.projectDetails?.ahjName || "-"}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* ATTACHMENTS */}
             <div

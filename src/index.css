@@ -1,12 +1,105 @@
+/* ================= THEME VARIABLES ================= */
+
+/* ===== LIGHT (Jira-like) ===== */
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f4f5f7;
+  --bg-tertiary: #ebecf0;
+  --bg-card: #ffffff;
+  --bg-hover: #f4f5f7;
+  --bg-input: #fafbfc;
+
+  --text-primary: #172b4d;
+  --text-secondary: #5e6c84;
+  --text-muted: #6b778c;
+  --text-link: #0052cc;
+  --text-heading: #091e42;
+
+  --border-color: #dfe1e6;
+  --border-light: #ebecf0;
+
+  --navbar-bg: #ffffff;
+  --navbar-text: #172b4d;
+  --navbar-border: #dfe1e6;
+
+  --sidebar-bg: #ffffff;
+  --sidebar-text: #172b4d;
+  --sidebar-hover: #f4f5f7;
+  --sidebar-active: #e6f0ff;
+
+  --shadow-sm: 0 1px 2px rgba(9, 30, 66, 0.08);
+  --shadow-md: 0 4px 8px rgba(9, 30, 66, 0.1);
+  --shadow-lg: 0 8px 16px rgba(9, 30, 66, 0.15);
+
+  --btn-primary-bg: #0052cc;
+  --btn-primary-text: #ffffff;
+  --btn-danger-text: #de350b;
+
+  --accent-gradient: linear-gradient(135deg, #0052cc, #2684ff);
+
+  --status-todo-bg: #dfe1e6;
+  --status-todo-text: #42526e;
+  --status-progress-bg: #deebff;
+  --status-progress-text: #0052cc;
+  --status-done-bg: #e3fcef;
+  --status-done-text: #006644;
+  --status-hold-bg: #ffebe6;
+  --status-hold-text: #de350b;
+}
+
+/* ===== DARK (Jira-like) ===== */
+[data-theme="dark"] {
+  --bg-primary: #1d2125;
+  --bg-secondary: #161a1d;
+  --bg-tertiary: #22272b;
+  --bg-card: #22272b;
+  --bg-hover: #282e33;
+  --bg-input: #282e33;
+
+  --text-primary: #b6c2cf;
+  --text-secondary: #9fadbc;
+  --text-muted: #738496;
+  --text-link: #579dff;
+  --text-heading: #dee4ea;
+
+  --border-color: #3a3f44;
+  --border-light: #2c3135;
+
+  --navbar-bg: #1d2125;
+  --navbar-text: #b6c2cf;
+  --navbar-border: #3a3f44;
+
+  --sidebar-bg: #161a1d;
+  --sidebar-text: #9fadbc;
+  --sidebar-hover: #282e33;
+  --sidebar-active: #1c2b41;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
+
+  --btn-primary-bg: #579dff;
+  --btn-primary-text: #1d2125;
+  --btn-danger-text: #f87168;
+
+  --accent-gradient: linear-gradient(135deg, #579dff, #85b8ff);
+
+  --status-todo-bg: #2c333a;
+  --status-todo-text: #9fadbc;
+  --status-progress-bg: #1c2b41;
+  --status-progress-text: #579dff;
+  --status-done-bg: #1c3329;
+  --status-done-text: #4bce97;
+  --status-hold-bg: #42221f;
+  --status-hold-text: #f87168;
+}
+
+/* ================= BASE STYLES ================= */
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -18,24 +111,31 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--text-link);
   text-decoration: inherit;
 }
 
 a:hover {
-  color: #535bf2;
+  opacity: 0.85;
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: #f8f9fa;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-heading);
+  font-weight: 700;
 }
 
 button {
@@ -45,13 +145,14 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color 0.25s, background 0.3s;
 }
 
 button:hover {
-  border-color: #646cff;
+  border-color: var(--text-link);
 }
 
 button:focus,
@@ -59,30 +160,29 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-.page-container {
-  margin-top: 65px;
-  /* navbar height */
-  margin-left: var(--sidebar-width);
-  /* sidebar width - dynamic */
-  padding: 0px;
-  min-height: calc(100vh - 65px);
-  background: #f8f9fa;
-  transition: margin-left 0.3s ease;
+input,
+select,
+textarea {
+  background: var(--bg-input);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  transition: background 0.3s, color 0.3s, border-color 0.2s;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--text-link);
+  outline: none;
+}
 
-  a:hover {
-    color: #747bff;
-  }
-
-  button {
-    background-color: #f9f9f9;
-  }
+.page-container {
+  margin-top: 65px;
+  margin-left: var(--sidebar-width);
+  padding: 0px;
+  min-height: calc(100vh - 65px);
+  background: var(--bg-secondary);
+  transition: margin-left 0.3s ease, background 0.3s ease;
 }
 
 /* =========================================================
@@ -112,27 +212,27 @@ button:focus-visible {
 /* ---- Selected State Colors ---- */
 
 .status-todo {
-  background: #f1f3f5;
-  color: #495057;
-  border-color: #ced4da;
+  background: var(--status-todo-bg);
+  color: var(--status-todo-text);
+  border-color: var(--status-todo-text);
 }
 
 .status-inprogress {
-  background: #e7f1ff;
-  color: #0d6efd;
-  border-color: #0d6efd;
+  background: var(--status-progress-bg);
+  color: var(--status-progress-text);
+  border-color: var(--status-progress-text);
 }
 
 .status-complete {
-  background: #e6f4ea;
-  color: #198754;
-  border-color: #198754;
+  background: var(--status-done-bg);
+  color: var(--status-done-text);
+  border-color: var(--status-done-text);
 }
 
 .status-hold {
-  background: #fdecea;
-  color: #dc3545;
-  border-color: #dc3545;
+  background: var(--status-hold-bg);
+  color: var(--status-hold-text);
+  border-color: var(--status-hold-text);
 }
 
 .status-qainprogress {
@@ -159,25 +259,24 @@ button:focus-visible {
   border-color: #146c43;
 }
 
-
 /* =========================================================
-   DROPDOWN OPTION COLORS (Best Effort – Browser Limited)
+   DROPDOWN OPTION COLORS
 ========================================================= */
 
 .status-select option[value="TODO"] {
-  color: #495057;
+  color: #42526e;
 }
 
 .status-select option[value="INPROGRESS"] {
-  color: #0d6efd;
+  color: #0052cc;
 }
 
 .status-select option[value="COMPLETE"] {
-  color: #198754;
+  color: #006644;
 }
 
 .status-select option[value="HOLD"] {
-  color: #dc3545;
+  color: #de350b;
 }
 
 .status-select option[value="QAINPROGRESS"] {
@@ -220,14 +319,15 @@ button:focus-visible {
 
 .pagination-controls button {
   padding: 5px 10px;
-  border: 1px solid #000;
-  background: #fff;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-primary);
   cursor: pointer;
 }
 
 .pagination-controls button.active {
-  background: #000;
-  color: #fff;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
 }
 
 .pagination-controls button:disabled {
@@ -239,7 +339,7 @@ button:focus-visible {
   padding: 0 6px;
 }
 
-/* Force Toastify to be on top of modals (modal is 10000) */
+/* Force Toastify to be on top of modals */
 .Toastify__toast-container {
   z-index: 20000 !important;
 }

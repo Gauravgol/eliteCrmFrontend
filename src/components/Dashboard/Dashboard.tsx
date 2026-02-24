@@ -108,8 +108,8 @@
 // }
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import "./Dashboard.css";
+import { getUserInfoApi, getDashboardDataApi } from "../../api/dashboard.api";
 
 type DashboardData = {
   tasks: Record<string, number>;
@@ -120,7 +120,6 @@ type DashboardData = {
 export default function Dashboard() {
   const navigate = useNavigate();
   const userFromStorage = JSON.parse(localStorage.getItem("user") || "{}");
-  const token = localStorage.getItem("token");
 
   const [user, setUser] = useState<any>(null);
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
@@ -140,28 +139,13 @@ export default function Dashboard() {
   }, []);
 
   const fetchUserInfo = async () => {
-    const res = await axios.get(
-      `${import.meta.env.VITE_API_BASE_URL}/getUserInfo?userId=${userFromStorage.id}`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    if (res.data?.responseCode == "200") {
-      setUser(res.data.apiResponseData);
-    }
+    const data: any = await getUserInfoApi(userFromStorage.id);
+    setUser(data);
   };
 
   const fetchDashboardData = async () => {
-    const res = await axios.get(
-      `${import.meta.env.VITE_API_BASE_URL}/getDashboardData?userId=${userFromStorage.id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          urn: Date.now().toString(),
-        },
-      }
-    );
-    if (res.data?.responseCode == "200") {
-      setDashboard(res.data.apiResponseData);
-    }
+    const data: any = await getDashboardDataApi(userFromStorage.id);
+    setDashboard(data);
   };
 
   if (loading) return <div className="loading">Loading dashboard...</div>;

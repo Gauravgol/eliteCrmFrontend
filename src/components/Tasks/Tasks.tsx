@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import "./Tasks.css";
-import { generateUrn } from "../../utils/generateUrn";
+import { getTasksApi } from "../../api/tasks.api";
+import { tagUserApi } from "../../api/projects.api";
 
 export default function Tasks() {
     const navigate = useNavigate();
@@ -59,25 +60,16 @@ export default function Tasks() {
         try {
             setLoading(true);
 
-            const params = new URLSearchParams();
-            params.append("page", String(page));
-            params.append("limit", "10");
+            const data: any = await getTasksApi({
+                page,
+                limit: 10,
+                search,
+                status,
+                assignedTo: selectedUser?._id,
+            });
 
-            if (search) params.append("search", search);
-            if (status) params.append("status", status);
-            if (selectedUser?._id) params.append("assignedTo", selectedUser._id);
-
-            const res = await fetch(
-                `${import.meta.env.VITE_API_BASE_URL}/getTask?${params.toString()}`,
-                {
-                    headers: { urn: generateUrn(13) },
-                }
-            );
-
-            const json = await res.json();
-
-            setTasks(json?.apiResponseData?.list || []);
-            setPagination(json?.apiResponseData?.pagination || { totalPages: 1 });
+            setTasks(data.list || []);
+            setPagination(data.pagination || { totalPages: 1 });
         } catch {
             console.error("Failed to fetch tasks");
         } finally {
@@ -87,12 +79,8 @@ export default function Tasks() {
 
     const fetchUsersForFilter = async (searchQuery: string) => {
         try {
-            const res = await fetch(
-                `${import.meta.env.VITE_API_BASE_URL}/tagUser?search=${searchQuery}`,
-                { headers: { urn: generateUrn(13) } }
-            );
-            const json = await res.json();
-            setUserList(json?.apiResponseData?.list || []);
+            const data: any = await tagUserApi(searchQuery);
+            setUserList(data.list || []);
         } catch {
             console.error("Failed to load users");
         }

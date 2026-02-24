@@ -28,7 +28,7 @@ export default function Login() {
         {
           headers: {
             "Content-Type": "application/json",
-            urn: Math.floor(Math.random() * 10 ** 13).toString(), // temp urn
+            urn: Math.floor(Math.random() * 10 ** 13).toString(), 
           },
         }
       );
@@ -45,8 +45,6 @@ export default function Login() {
         if (apiResponseData.user?.id) {
           connectUser(apiResponseData.user.id);
         }
-
-        console.log("Hi")
         navigate("/dashboard");
       } else {
         toast.error(responseMessage || "Login failed");

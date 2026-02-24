@@ -1,15 +1,14 @@
 import { useState, useRef } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
 import "./NewProject.css";
 import { generateUrn } from "../../utils/generateUrn";
 import RichTextEditor from "../RichTextEditor/RichTextEditor";
+import { createProjectApi } from "../../api/projects.api";
 
 export default function NewProject() {
   const today = new Date().toISOString().split("T")[0];
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const token = localStorage.getItem("token");
 
   const [form, setForm] = useState({
     name: "",
@@ -17,6 +16,18 @@ export default function NewProject() {
     startDate: today,
     dueDate: "",
     status: "INPROGRESS",
+  });
+
+  const [projectDetails, setProjectDetails] = useState({
+    homeownerName: "",
+    estimatedProduction: "",
+    panelModulesQuantity: "",
+    inverterModelQuantity: "",
+    battery: "No",
+    meterNumber: "",
+    utilityName: "",
+    roof: "Pitch",
+    ahjName: "",
   });
 
   const [attachments, setAttachments] = useState<File[]>([]);
@@ -28,10 +39,16 @@ export default function NewProject() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const handleDetailsChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    setProjectDetails({ ...projectDetails, [e.target.name]: e.target.value });
+  };
+
   const handleFileChange = (files: FileList | null) => {
     if (!files) return;
 
-    const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+    const MAX_SIZE = 6 * 1024 * 1024; // 5MB
 
     for (const file of Array.from(files)) {
       if (file.size > MAX_SIZE) {
@@ -46,7 +63,7 @@ export default function NewProject() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!form.name || !form.dueDate) {
+    if (!form.name || !form.dueDate || !projectDetails.homeownerName) {
       toast.error("Please fill all required fields");
       return;
     }
@@ -60,24 +77,19 @@ export default function NewProject() {
       formData.append("startDate", form.startDate);
       formData.append("dueDate", form.dueDate);
       formData.append("owner", assignedUser._id);
-      formData.append("createdBy", user.id)
+      formData.append("createdBy", user.id);
+
+      Object.entries(projectDetails).forEach(([key, value]) => {
+        formData.append(`projectDetails[${key}]`, value);
+      });
 
       attachments.forEach((file) => {
         formData.append("attachments", file);
       });
 
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/createProject`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            urn: generateUrn(),
-          },
-        }
-      );
+      const res: any = await createProjectApi(formData);
 
-      if (res.data?.responseCode === "200") {
+      if (res) {
         toast.success("Project created successfully 🎉");
 
         setForm({
@@ -86,6 +98,17 @@ export default function NewProject() {
           startDate: today,
           dueDate: "",
           status: "INPROGRESS",
+        });
+        setProjectDetails({
+          homeownerName: "",
+          estimatedProduction: "",
+          panelModulesQuantity: "",
+          inverterModelQuantity: "",
+          battery: "No",
+          meterNumber: "",
+          utilityName: "",
+          roof: "Pitch",
+          ahjName: "",
         });
         setAttachments([]);
       } else {
@@ -152,7 +175,8 @@ export default function NewProject() {
 
   return (
     <div className="page-container">
-      <div className="new-project-page">
+
+      <div className="new-project-page" style={{ padding: "25px" }}>
         <h2>Create New Project</h2>
 
         <form onSubmit={handleSubmit} className="project-form">
@@ -277,6 +301,123 @@ export default function NewProject() {
               />
             </label>
           </div>
+
+          <hr className="form-divider" />
+          <h4 className="section-title">Project Details</h4>
+
+          <div className="form-grid">
+            {/* Homeowner Name */}
+            <div className="form-row">
+              <label>Homeowner Name *</label>
+              <input
+                type="text"
+                name="homeownerName"
+                value={projectDetails.homeownerName}
+                onChange={handleDetailsChange}
+                required
+              />
+            </div>
+
+            {/* Estimated Production */}
+            <div className="form-row">
+              <label>Estimated Production</label>
+              <input
+                type="text"
+                name="estimatedProduction"
+                value={projectDetails.estimatedProduction}
+                onChange={handleDetailsChange}
+              />
+            </div>
+          </div>
+
+          <div className="form-grid">
+            {/* Panel Modules & Quantity */}
+            <div className="form-row">
+              <label>Panel Modules & Quantity</label>
+              <input
+                type="text"
+                name="panelModulesQuantity"
+                value={projectDetails.panelModulesQuantity}
+                onChange={handleDetailsChange}
+              />
+            </div>
+
+            {/* Inverter Model & Quantity */}
+            <div className="form-row">
+              <label>Inverter Model & Quantity</label>
+              <input
+                type="text"
+                name="inverterModelQuantity"
+                value={projectDetails.inverterModelQuantity}
+                onChange={handleDetailsChange}
+              />
+            </div>
+          </div>
+
+          <div className="form-grid">
+            {/* Battery */}
+            <div className="form-row">
+              <label>Battery (Y/N)</label>
+              <select
+                name="battery"
+                value={projectDetails.battery}
+                onChange={handleDetailsChange}
+              >
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+
+            {/* Meter Number */}
+            <div className="form-row">
+              <label>Meter Number</label>
+              <input
+                type="text"
+                name="meterNumber"
+                value={projectDetails.meterNumber}
+                onChange={handleDetailsChange}
+              />
+            </div>
+          </div>
+
+          <div className="form-grid">
+            {/* Utility Name */}
+            <div className="form-row">
+              <label>Utility Name</label>
+              <input
+                type="text"
+                name="utilityName"
+                value={projectDetails.utilityName}
+                onChange={handleDetailsChange}
+              />
+            </div>
+
+            {/* Roof */}
+            <div className="form-row">
+              <label>Roof (Pitch / Flat)</label>
+              <select
+                name="roof"
+                value={projectDetails.roof}
+                onChange={handleDetailsChange}
+              >
+                <option value="Pitch">Pitch</option>
+                <option value="Flat">Flat</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="form-row">
+            {/* AHJ Name */}
+            <label>AHJ Name</label>
+            <input
+              type="text"
+              name="ahjName"
+              value={projectDetails.ahjName}
+              onChange={handleDetailsChange}
+            />
+          </div>
+
+          <hr className="form-divider" />
 
           {/* SUBMIT */}
           <button className="submit-btn" disabled={loading}>

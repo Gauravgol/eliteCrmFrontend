@@ -1,24 +1,23 @@
 /* ================= NEW PROJECT PAGE ================= */
 
 .new-project-page {
-  max-width: 900px;
-  margin: 0 auto;
+  width: 100%;
   padding-bottom: 40px;
 }
 
 .new-project-page h2 {
   margin-bottom: 25px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--text-primary);
   font-size: 24px;
 }
 
 .project-form {
-  background: #ffffff;
+  background: var(--bg-card);
   padding: 32px;
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  border: 1px solid #f0f0f0;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-light);
 }
 
 .form-row {
@@ -30,7 +29,7 @@
 .form-row label {
   font-weight: 600;
   margin-bottom: 8px;
-  color: #343a40;
+  color: var(--text-primary);
   font-size: 14px;
 }
 
@@ -39,19 +38,20 @@
 .form-row select {
   padding: 12px 16px;
   border-radius: 8px;
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--border-color);
   font-size: 15px;
-  background-color: #f8f9fa;
+  background-color: var(--bg-input);
+  color: var(--text-primary);
   transition: all 0.2s ease;
   width: 100%;
 }
 
 .form-row input:focus,
 .form-row select:focus {
-  border-color: #000;
-  background-color: #fff;
+  border-color: var(--text-link);
+  background-color: var(--bg-card);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 0 3px rgba(0, 82, 204, 0.1);
 }
 
 .form-grid {
@@ -62,10 +62,10 @@
 
 /* Rich Text Editor Wrapper */
 .rich-text-wrapper {
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   overflow: hidden;
-  background-color: #fff;
+  background-color: var(--bg-card);
 }
 
 .rich-text-wrapper .rte-container {
@@ -76,30 +76,28 @@
 
 .rich-text-wrapper .rte-editor {
   min-height: 200px;
-  /* Taller for main description */
-  background-color: #fff;
+  background-color: var(--bg-card);
 }
 
-/* User Assign Custom Input (Reusing styles effectively) */
+/* User Assign Custom Input */
 .assign-wrapper {
   position: relative;
 }
 
 .assign-input {
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 6px 12px;
   min-height: 47px;
-  /* Match other inputs */
   display: flex;
   align-items: center;
 }
 
 .assign-input:focus-within {
-  border-color: #000;
-  background-color: #fff;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  border-color: var(--text-link);
+  background-color: var(--bg-card);
+  box-shadow: 0 0 0 3px rgba(0, 82, 204, 0.1);
 }
 
 .assign-input input {
@@ -109,6 +107,7 @@
   margin: 0;
   box-shadow: none;
   height: 100%;
+  color: var(--text-primary);
 }
 
 .assign-input input:focus {
@@ -116,7 +115,7 @@
 }
 
 .assign-chip {
-  background: #e9ecef;
+  background: var(--bg-tertiary);
   padding: 4px 10px;
   border-radius: 20px;
   font-size: 14px;
@@ -124,18 +123,18 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #495057;
+  color: var(--text-secondary);
 }
 
 .assign-chip span {
   cursor: pointer;
   font-size: 18px;
   line-height: 0.8;
-  color: #adb5bd;
+  color: var(--text-muted);
 }
 
 .assign-chip span:hover {
-  color: #000;
+  color: var(--text-primary);
 }
 
 .assign-dropdown {
@@ -143,11 +142,11 @@
   top: 100%;
   left: 0;
   right: 0;
-  background: #fff;
-  border: 1px solid #ddd;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   margin-top: 6px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
   z-index: 50;
   max-height: 200px;
   overflow-y: auto;
@@ -156,12 +155,13 @@
 .assign-dropdown li {
   padding: 10px 16px;
   cursor: pointer;
-  border-bottom: 1px solid #f8f9fa;
+  border-bottom: 1px solid var(--border-light);
   font-size: 14px;
+  color: var(--text-primary);
 }
 
 .assign-dropdown li:hover {
-  background: #f8f9fa;
+  background: var(--bg-hover);
 }
 
 
@@ -175,22 +175,22 @@
 
 .attachment-item {
   font-size: 13px;
-  background: #e9ecef;
+  background: var(--bg-tertiary);
   padding: 6px 12px;
   border-radius: 6px;
-  color: #495057;
-  border: 1px solid #dee2e6;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
 }
 
 .attach-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #000;
+  color: var(--text-primary);
   cursor: pointer;
   font-weight: 600;
   font-size: 14px;
-  background: #f1f3f5;
+  background: var(--bg-tertiary);
   padding: 8px 16px;
   border-radius: 6px;
   transition: background 0.2s;
@@ -198,7 +198,7 @@
 }
 
 .attach-btn:hover {
-  background: #e9ecef;
+  background: var(--bg-hover);
   text-decoration: none;
 }
 
@@ -206,8 +206,8 @@
 .submit-btn {
   width: 100%;
   padding: 14px;
-  background: #000000;
-  color: #fff;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -238,4 +238,19 @@
   .project-form {
     padding: 20px;
   }
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 24px 0 16px;
+  color: var(--text-primary);
+  border-left: 4px solid var(--btn-primary-bg);
+  padding-left: 12px;
+}
+
+.form-divider {
+  border: 0;
+  border-top: 1px solid var(--border-light);
+  margin: 32px 0;
 }

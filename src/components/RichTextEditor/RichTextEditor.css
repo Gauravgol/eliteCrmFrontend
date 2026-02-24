@@ -10,8 +10,8 @@
     align-items: center;
     gap: 4px;
     padding: 8px;
-    background: #f4f5f7;
-    border: 1px solid #dfe1e6;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
     border-bottom: none;
     border-radius: 4px 4px 0 0;
     flex-wrap: wrap;
@@ -19,8 +19,8 @@
 
 .rte-btn {
     padding: 6px 10px;
-    background: white;
-    border: 1px solid #dfe1e6;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
     border-radius: 3px;
     cursor: pointer;
     font-size: 14px;
@@ -31,21 +31,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    color: var(--text-primary);
 }
 
 .rte-btn:hover {
-    background: #ebecf0;
-    border-color: #b3bac5;
+    background: var(--bg-hover);
+    border-color: var(--text-muted);
 }
 
 .rte-btn:active {
-    background: #dfe1e6;
+    background: var(--bg-tertiary);
 }
 
 .rte-divider {
     width: 1px;
     height: 24px;
-    background: #dfe1e6;
+    background: var(--border-color);
     margin: 0 4px;
 }
 
@@ -59,14 +60,14 @@
     top: 100%;
     left: 0;
     margin-top: 4px;
-    background: white;
-    border: 1px solid #dfe1e6;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     padding: 8px;
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 4px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-lg);
     z-index: 1000;
     width: 180px;
 }
@@ -74,7 +75,7 @@
 .rte-color-swatch {
     width: 24px;
     height: 24px;
-    border: 1px solid #dfe1e6;
+    border: 1px solid var(--border-color);
     border-radius: 3px;
     cursor: pointer;
     transition: transform 0.2s ease;
@@ -82,7 +83,7 @@
 
 .rte-color-swatch:hover {
     transform: scale(1.15);
-    border-color: #0052cc;
+    border-color: var(--text-link);
 }
 
 /* Editor */
@@ -91,22 +92,22 @@
     max-height: 400px;
     overflow-y: auto;
     padding: 12px;
-    background: white;
-    border: 1px solid #dfe1e6;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
     border-radius: 0 0 4px 4px;
     font-size: 14px;
     line-height: 1.6;
-    color: #172b4d;
+    color: var(--text-primary);
     outline: none;
 }
 
 .rte-editor:focus {
-    border-color: #0052cc;
+    border-color: var(--text-link);
 }
 
 .rte-editor:empty:before {
     content: "Start typing...";
-    color: #a5adba;
+    color: var(--text-muted);
 }
 
 /* Actions */
@@ -128,30 +129,30 @@
 }
 
 .btn-save {
-    background: #0052cc;
-    color: white;
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-text);
 }
 
 .btn-save:hover {
-    background: #0747a6;
+    opacity: 0.9;
 }
 
 .btn-save:active {
-    background: #003d99;
+    opacity: 0.8;
 }
 
 .btn-cancel {
     background: transparent;
-    color: #42526e;
-    border: 1px solid #dfe1e6;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
 }
 
 .btn-cancel:hover {
-    background: #f4f5f7;
+    background: var(--bg-hover);
 }
 
 .btn-cancel:active {
-    background: #ebecf0;
+    background: var(--bg-tertiary);
 }
 
 /* Editor Content Styling */

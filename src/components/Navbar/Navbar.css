@@ -3,12 +3,14 @@
   top: 0;
   width: 100%;
   height: 65px;
-  background: #000;
+  background: var(--navbar-bg);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
   z-index: 999;
+  border-bottom: 1px solid var(--navbar-border);
+  transition: background 0.3s ease;
 }
 
 .nav-left {
@@ -20,7 +22,7 @@
 .sidebar-toggle-btn {
   background: transparent;
   border: none;
-  color: white;
+  color: var(--navbar-text);
   font-size: 1.5rem;
   cursor: pointer;
   display: flex;
@@ -35,7 +37,7 @@
 }
 
 .nav-title {
-  color: white;
+  color: var(--navbar-text);
   font-weight: bold;
   font-size: 1.5rem;
   white-space: nowrap;
@@ -56,13 +58,13 @@
 
 .notification-icon {
   font-size: 1.5rem;
-  color: white;
+  color: var(--navbar-text);
   cursor: pointer;
   transition: color 0.2s;
 }
 
 .notification-icon:hover {
-  color: #ffd700;
+  color: var(--text-link);
 }
 
 /* Notification Badge */
@@ -85,13 +87,14 @@
   position: absolute;
   top: 140%;
   right: 0;
-  background: white;
+  background: var(--bg-card);
   border-radius: 12px;
   width: 380px;
   max-height: 500px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-lg);
   overflow: hidden;
   z-index: 1000;
+  border: 1px solid var(--border-color);
 }
 
 /* Notification Header */
@@ -100,20 +103,20 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  border-bottom: 1px solid #e0e0e0;
-  background: #f8f9fa;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
 }
 
 .notification-header h6 {
   margin: 0;
   font-size: 16px;
   font-weight: 600;
-  color: #000;
+  color: var(--text-primary);
 }
 
 .notification-count {
   font-size: 13px;
-  color: #666;
+  color: var(--text-muted);
   font-weight: 500;
 }
 
@@ -126,7 +129,7 @@
 /* Notification Item */
 .notification-item {
   padding: 14px 20px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--border-light);
   cursor: pointer;
   transition: background 0.2s;
   display: flex;
@@ -136,7 +139,7 @@
 }
 
 .notification-item:hover {
-  background: #f8f9fa;
+  background: var(--bg-hover);
 }
 
 .notification-item:last-child {
@@ -145,11 +148,11 @@
 
 /* Unread notification styling */
 .notification-item.unread {
-  background: #f0f7ff;
+  background: var(--bg-tertiary);
 }
 
 .notification-item.unread:hover {
-  background: #e6f2ff;
+  background: var(--bg-hover);
 }
 
 /* Notification Content */
@@ -160,27 +163,27 @@
 .notification-title {
   font-size: 14px;
   font-weight: 600;
-  color: #000;
+  color: var(--text-primary);
   margin-bottom: 4px;
 }
 
 .notification-message {
   font-size: 13px;
-  color: #555;
+  color: var(--text-secondary);
   margin-bottom: 6px;
   line-height: 1.4;
 }
 
 .notification-time {
   font-size: 12px;
-  color: #999;
+  color: var(--text-muted);
 }
 
 /* Unread Dot Indicator */
 .unread-dot {
   width: 8px;
   height: 8px;
-  background: #0066ff;
+  background: var(--text-link);
   border-radius: 50%;
   margin-top: 6px;
   flex-shrink: 0;
@@ -190,12 +193,12 @@
 .notification-footer {
   padding: 12px 20px;
   text-align: center;
-  border-top: 1px solid #e0e0e0;
-  background: #f8f9fa;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-secondary);
 }
 
 .notification-footer a {
-  color: #0066ff;
+  color: var(--text-link);
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
@@ -211,24 +214,24 @@
 }
 
 .notification-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--bg-secondary);
 }
 
 .notification-list::-webkit-scrollbar-thumb {
-  background: #ccc;
+  background: var(--border-color);
   border-radius: 3px;
 }
 
 .notification-list::-webkit-scrollbar-thumb:hover {
-  background: #999;
+  background: var(--text-muted);
 }
 
 .notification-loading {
   padding: 10px;
   text-align: center;
   font-size: 13px;
-  color: #666;
-  background: #f8f9fa;
+  color: var(--text-muted);
+  background: var(--bg-secondary);
 }
 
 /* ================= PROFILE ================= */
@@ -239,7 +242,7 @@
 
 .profile-icon {
   font-size: 2rem;
-  color: white;
+  color: var(--navbar-text);
   cursor: pointer;
 }
 
@@ -248,24 +251,39 @@
   position: absolute;
   top: 110%;
   right: 0;
-  background: white;
+  background: var(--bg-card);
   border-radius: 8px;
-  width: 140px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  width: 160px;
+  box-shadow: var(--shadow-lg);
   overflow: hidden;
+  border: 1px solid var(--border-color);
 }
 
 .dropdown-item {
-  padding: 10px;
+  padding: 10px 14px;
   cursor: pointer;
   font-size: 14px;
+  color: var(--text-primary);
+  transition: background 0.2s;
 }
 
 .dropdown-item:hover {
-  background: #f2f2f2;
+  background: var(--bg-hover);
+}
+
+.dropdown-item.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-link);
+  font-weight: 500;
+}
+
+.dropdown-item.theme-toggle i {
+  font-size: 16px;
 }
 
 .logout {
-  color: red;
+  color: var(--btn-danger-text) !important;
   font-weight: bold;
 }

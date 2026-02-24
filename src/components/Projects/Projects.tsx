@@ -207,8 +207,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Projects.css";
 
-import { getProjectsApi } from "../../api/projects.api";
-import { generateUrn } from "../../utils/generateUrn";
+import { getProjectsApi, tagClientApi } from "../../api/projects.api";
 
 interface Project {
   _id: string;
@@ -265,12 +264,8 @@ function Projects() {
   /* ---------------- FETCH OWNERS ---------------- */
   const fetchOwners = async (searchQuery: string) => {
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/tagClient?search=${searchQuery}`,
-        { headers: { urn: generateUrn() } }
-      );
-      const json = await res.json();
-      setOwnerList(json?.apiResponseData?.list || []);
+      const data: any = await tagClientApi(searchQuery);
+      setOwnerList(data.list || []);
     } catch {
       console.error("Failed to load owners");
     }

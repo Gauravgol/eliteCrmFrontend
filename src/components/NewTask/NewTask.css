@@ -9,16 +9,16 @@
 .new-task-page h2 {
   margin-bottom: 25px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--text-heading);
   font-size: 24px;
 }
 
 .task-form {
-  background: #ffffff;
+  background: var(--bg-card);
   padding: 32px;
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  border: 1px solid #f0f0f0;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
 }
 
 .form-row {
@@ -30,28 +30,28 @@
 .form-row label {
   font-weight: 600;
   margin-bottom: 8px;
-  color: #343a40;
+  color: var(--text-primary);
   font-size: 14px;
 }
 
-/* Inputs & Selects */
 .form-row input,
 .form-row select {
   padding: 12px 16px;
   border-radius: 8px;
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--border-color);
   font-size: 15px;
-  background-color: #f8f9fa;
+  background-color: var(--bg-input);
+  color: var(--text-primary);
   transition: all 0.2s ease;
   width: 100%;
 }
 
 .form-row input:focus,
 .form-row select:focus {
-  border-color: #000;
-  background-color: #fff;
+  border-color: var(--text-link);
+  background-color: var(--bg-card);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 0 3px rgba(0, 82, 204, 0.1);
 }
 
 .form-grid {
@@ -60,12 +60,11 @@
   gap: 24px;
 }
 
-/* Rich Text Editor Wrapper */
 .rich-text-wrapper {
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   overflow: hidden;
-  background-color: #fff;
+  background-color: var(--bg-card);
 }
 
 .rich-text-wrapper .rte-container {
@@ -76,18 +75,17 @@
 
 .rich-text-wrapper .rte-editor {
   min-height: 180px;
-  background-color: #fff;
+  background-color: var(--bg-card);
 }
 
-/* Assign Input */
 .assign-wrapper {
   position: relative;
   width: 100%;
 }
 
 .assign-input {
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 6px 12px;
   min-height: 47px;
@@ -97,9 +95,9 @@
 }
 
 .assign-input:focus-within {
-  border-color: #000;
-  background-color: #fff;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  border-color: var(--text-link);
+  background-color: var(--bg-card);
+  box-shadow: 0 0 0 3px rgba(0, 82, 204, 0.1);
 }
 
 .assign-input input {
@@ -109,6 +107,7 @@
   margin: 0;
   box-shadow: none;
   height: 100%;
+  color: var(--text-primary);
 }
 
 .assign-input input:focus {
@@ -116,7 +115,7 @@
 }
 
 .assign-chip {
-  background: #e9ecef;
+  background: var(--bg-tertiary);
   padding: 4px 10px;
   border-radius: 20px;
   font-size: 14px;
@@ -124,18 +123,18 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #495057;
+  color: var(--text-secondary);
 }
 
 .assign-chip span {
   cursor: pointer;
   font-size: 18px;
   line-height: 0.8;
-  color: #adb5bd;
+  color: var(--text-muted);
 }
 
 .assign-chip span:hover {
-  color: #000;
+  color: var(--text-primary);
 }
 
 .assign-dropdown {
@@ -143,31 +142,29 @@
   top: 100%;
   left: 0;
   right: 0;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   margin-top: 6px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
   z-index: 100;
-  background: #fff;
+  background: var(--bg-card);
   max-height: 200px;
   overflow-y: auto;
   list-style: none;
-  /* Reset default list style */
 }
 
 .assign-dropdown li {
   padding: 10px 16px;
   cursor: pointer;
-  border-bottom: 1px solid #f8f9fa;
+  border-bottom: 1px solid var(--border-light);
   font-size: 14px;
+  color: var(--text-primary);
 }
 
 .assign-dropdown li:hover {
-  background: #f8f9fa;
+  background: var(--bg-hover);
 }
 
-
-/* Attachments */
 .attachment-list {
   display: flex;
   flex-wrap: wrap;
@@ -177,22 +174,22 @@
 
 .attachment-item {
   font-size: 13px;
-  background: #e9ecef;
+  background: var(--bg-tertiary);
   padding: 6px 12px;
   border-radius: 6px;
-  color: #495057;
-  border: 1px solid #dee2e6;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
 }
 
 .attach-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #000;
+  color: var(--text-primary);
   cursor: pointer;
   font-weight: 600;
   font-size: 14px;
-  background: #f1f3f5;
+  background: var(--bg-tertiary);
   padding: 8px 16px;
   border-radius: 6px;
   transition: background 0.2s;
@@ -200,11 +197,10 @@
 }
 
 .attach-btn:hover {
-  background: #e9ecef;
+  background: var(--bg-hover);
   text-decoration: none;
 }
 
-/* Actions */
 .action-row {
   display: flex;
   justify-content: flex-end;
@@ -216,21 +212,21 @@
   background: transparent;
   padding: 12px 24px;
   border-radius: 8px;
-  border: 1px solid #dee2e6;
-  color: #495057;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .cancel-btn:hover {
-  background: #f8f9fa;
-  color: #212529;
+  background: var(--bg-hover);
+  color: var(--text-primary);
 }
 
 .submit-btn {
-  background: #000000;
-  color: #fff;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
   padding: 12px 32px;
   border-radius: 8px;
   border: none;
@@ -248,7 +244,6 @@
   cursor: not-allowed;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .form-grid {
     grid-template-columns: 1fr;

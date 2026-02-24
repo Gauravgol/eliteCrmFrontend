@@ -12,17 +12,18 @@
    border: none;
    font-size: 14px;
    cursor: pointer;
-   color: #1565c0;
+   color: var(--text-link);
  }
 
  .task-header h2 {
-   font-weight: 600;
+   font-weight: 700;
    margin-bottom: 4px;
+   color: var(--text-heading);
  }
 
  .task-header .muted {
    font-size: 14px;
-   color: #666;
+   color: var(--text-muted);
  }
 
  /* ================= BODY LAYOUT ================= */
@@ -36,22 +37,22 @@
  /* ================= LEFT PANEL ================= */
 
  .task-main {
-   background: #fff;
+   background: var(--bg-card);
    padding: 16px;
    border-radius: 8px;
+   border: 1px solid var(--border-color);
  }
 
- /* Section headings */
  .task-main h4 {
    margin-top: 0;
    margin-bottom: 8px;
-   font-weight: 600;
+   font-weight: 700;
+   color: var(--text-heading);
  }
 
- /* Description */
  .task-desc {
    font-size: 14px;
-   color: #555;
+   color: var(--text-secondary);
    margin-bottom: 16px;
    line-height: 1.6;
  }
@@ -67,7 +68,7 @@
  }
 
  .attachment a {
-   color: #1565c0;
+   color: var(--text-link);
    text-decoration: none;
  }
 
@@ -78,7 +79,7 @@
  /* ================= COMMENTS ================= */
 
  .comment {
-   border-top: 1px solid #eee;
+   border-top: 1px solid var(--border-light);
    padding-top: 10px;
    margin-top: 12px;
  }
@@ -92,17 +93,17 @@
 
  .comment strong {
    font-size: 14px;
-   color: #333;
+   color: var(--text-heading);
  }
 
  .comment-time {
    font-size: 12px;
-   color: #888;
+   color: var(--text-muted);
  }
 
  .comment p {
    font-size: 14px;
-   color: #444;
+   color: var(--text-secondary);
    margin-top: 0;
    line-height: 1.5;
  }
@@ -110,10 +111,11 @@
  /* ================= RIGHT PANEL ================= */
 
  .task-info {
-   background: #fff;
+   background: var(--bg-card);
    padding: 16px;
    border-radius: 8px;
    height: fit-content;
+   border: 1px solid var(--border-color);
  }
 
  .task-info .info-row {
@@ -121,14 +123,14 @@
    justify-content: space-between;
    margin-bottom: 10px;
    font-size: 14px;
+   color: var(--text-primary);
  }
 
  .task-info label {
    font-weight: 500;
-   color: #444;
+   color: var(--text-muted);
  }
 
- /* Status badges (reuse ProjectDetails logic) */
  .task-info .status {
    font-size: 12px;
    padding: 3px 8px;
@@ -137,27 +139,26 @@
  }
 
  .task-info .status.TODO {
-   background: #e3f2fd;
-   color: #1565c0;
+   background: var(--status-todo-bg);
+   color: var(--status-todo-text);
  }
 
  .task-info .status.IN_PROGRESS,
  .task-info .status.INPROGRESS {
-   background: #fff3e0;
-   color: #ef6c00;
+   background: var(--status-progress-bg);
+   color: var(--status-progress-text);
  }
 
  .task-info .status.DONE {
-   background: #e8f5e9;
-   color: #2e7d32;
+   background: var(--status-done-bg);
+   color: var(--status-done-text);
  }
 
  .task-info .status.HOLD {
-   background: #f3e5f5;
-   color: #6a1b9a;
+   background: var(--status-hold-bg);
+   color: var(--status-hold-text);
  }
 
- /* Priority badges */
  .task-info .priority {
    font-size: 12px;
    padding: 3px 8px;
@@ -187,7 +188,7 @@
  .empty-state {
    padding: 40px;
    text-align: center;
-   color: #666;
+   color: var(--text-muted);
  }
 
  /* ================= RESPONSIVE ================= */
@@ -211,6 +212,10 @@
    font-size: 22px;
    font-weight: 600;
    padding: 4px;
+   background: var(--bg-input);
+   color: var(--text-heading);
+   border: 1px solid var(--border-color);
+   border-radius: 4px;
  }
 
  .inline-textarea {
@@ -218,6 +223,10 @@
    min-height: 80px;
    padding: 8px;
    font-size: 14px;
+   background: var(--bg-input);
+   color: var(--text-primary);
+   border: 1px solid var(--border-color);
+   border-radius: 6px;
  }
 
  .comment-box {
@@ -226,12 +235,20 @@
    margin-top: 8px;
    padding: 6px;
    font-size: 13px;
+   background: var(--bg-input);
+   color: var(--text-primary);
+   border: 1px solid var(--border-color);
+   border-radius: 6px;
  }
 
  .comment-btn {
    margin-top: 6px;
    padding: 4px 10px;
    font-size: 13px;
+   background: var(--btn-primary-bg);
+   color: var(--btn-primary-text);
+   border: none;
+   border-radius: 4px;
  }
 
  .section-header {
@@ -239,14 +256,14 @@
    cursor: pointer;
    user-select: none;
    margin: 12px 0 6px;
-   color: #333;
+   color: var(--text-primary);
    display: flex;
    align-items: center;
    gap: 6px;
  }
 
  .section-header:hover {
-   color: #1565c0;
+   color: var(--text-link);
  }
 
  .attachment-link {
@@ -254,7 +271,7 @@
    align-items: center;
    gap: 8px;
    font-size: 14px;
-   color: #1565c0;
+   color: var(--text-link);
    text-decoration: none;
  }
 
@@ -264,7 +281,6 @@
 
  .attachment-icon {
    font-size: 22px;
-   /* 👈 LARGE ICON */
    line-height: 1;
  }
 
@@ -272,7 +288,7 @@
    display: inline-block;
    margin-top: 8px;
    font-size: 13px;
-   color: #1565c0;
+   color: var(--text-link);
    cursor: pointer;
    transition: color 0.2s ease, background-color 0.2s ease;
    padding: 4px 6px;
@@ -280,12 +296,10 @@
  }
 
  .attach-btn:hover {
-   background-color: #e3f2fd;
-   /* light blue hover */
-   color: #0d47a1;
+   background-color: var(--bg-hover);
  }
 
- /* ===== Status Dropdown Base ===== */
+ /* ===== Status Dropdown ===== */
  .status-select {
    padding: 6px 10px;
    border-radius: 8px;
@@ -295,65 +309,54 @@
    transition: all 0.2s ease;
  }
 
- /* ===== Status Colors ===== */
-
- /* TODO */
  .status-todo {
-   background: #e9ecef;
-   color: #495057;
-   border-color: #ced4da;
+   background: var(--status-todo-bg);
+   color: var(--status-todo-text);
+   border-color: var(--status-todo-text);
  }
 
- /* IN PROGRESS */
  .status-inprogress {
-   background: #e7f1ff;
-   color: #0d6efd;
-   border-color: #0d6efd;
+   background: var(--status-progress-bg);
+   color: var(--status-progress-text);
+   border-color: var(--status-progress-text);
  }
 
- /* COMPLETE */
  .status-complete {
-   background: #e6f4ea;
-   color: #198754;
-   border-color: #198754;
+   background: var(--status-done-bg);
+   color: var(--status-done-text);
+   border-color: var(--status-done-text);
  }
 
- /* HOLD */
  .status-hold {
-   background: #fdecea;
-   color: #dc3545;
-   border-color: #dc3545;
+   background: var(--status-hold-bg);
+   color: var(--status-hold-text);
+   border-color: var(--status-hold-text);
  }
 
- /* QA IN PROGRESS */
  .status-qainprogress {
    background: #fff4e6;
    color: #fd7e14;
    border-color: #fd7e14;
  }
 
- /* QA COMPLETE */
  .status-qacomplete {
    background: #e6fffa;
    color: #20c997;
    border-color: #20c997;
  }
 
- /* QC IN PROGRESS */
  .status-qcinprogress {
    background: #f3e8ff;
    color: #6f42c1;
    border-color: #6f42c1;
  }
 
- /* QC COMPLETE */
  .status-qccomplete {
    background: #e6f4ea;
    color: #146c43;
    border-color: #146c43;
  }
 
- /* ===== Hover & Focus ===== */
  .status-select:hover {
    opacity: 0.95;
  }
@@ -363,30 +366,11 @@
    box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
  }
 
- /* ===== ASSIGNED TO – SAME STYLE AS STATUS ===== */
-
- /* .assign-input {
-  background: #e7f1ff;
-  color: #0d6efd;
-  border-color: #0d6efd;
-  width: auto;
-} */
-
- /* When no user selected (input mode) */
- /* .assign-input input {
-  border: none;
-  outline: none;
-  background: transparent;
-  font-weight: 600;
-  width: auto;
-  min-width: 80px;
-} */
-
  /* Assigned user badge */
  .assign-chip {
-   background: #e7f1ff;
-   color: #0d6efd;
-   border: 1px solid #0d6efd;
+   background: var(--status-progress-bg);
+   color: var(--text-link);
+   border: 1px solid var(--text-link);
    padding: 4px 10px;
    border-radius: 999px;
    font-size: 13px;
@@ -395,20 +379,18 @@
    gap: 6px;
  }
 
- /* Remove icon */
  .assign-chip span {
    cursor: pointer;
    font-weight: bold;
  }
 
- /* Dropdown */
  .assign-dropdown {
    position: absolute;
    top: 100%;
    left: 0;
    width: auto;
-   background: #fff;
-   border: 1px solid #ddd;
+   background: var(--bg-card);
+   border: 1px solid var(--border-color);
    border-radius: 8px;
    list-style: none;
    margin-top: 6px;
@@ -422,12 +404,12 @@
    padding: 8px 12px;
    cursor: pointer;
    font-size: 14px;
+   color: var(--text-primary);
  }
 
  .assign-dropdown li:hover {
-   background: #f0f4ff;
+   background: var(--bg-hover);
  }
-
 
  /* ===== COMMENT @MENTION ===== */
 
@@ -440,8 +422,8 @@
    bottom: 100%;
    left: 0;
    width: 220px;
-   background: #fff;
-   border: 1px solid #ddd;
+   background: var(--bg-card);
+   border: 1px solid var(--border-color);
    border-radius: 6px;
    list-style: none;
    padding: 4px 0;
@@ -454,10 +436,11 @@
    padding: 8px 10px;
    cursor: pointer;
    font-size: 14px;
+   color: var(--text-primary);
  }
 
  .mention-dropdown li:hover {
-   background: #f0f4ff;
+   background: var(--bg-hover);
  }
 
  .mention {
@@ -468,7 +451,7 @@
    font-weight: 600;
  }
 
- /* ===== JIRA STYLE ATTACHMENTS (TASK DETAILS) ===== */
+ /* ===== JIRA STYLE ATTACHMENTS ===== */
 
  .attachments-grid {
    display: grid;
@@ -482,35 +465,30 @@
    color: inherit;
  }
 
- /* SAME PREVIEW BOX FOR PDF & IMAGE */
  .attachment-preview {
    width: 100%;
    height: 120px;
-   border: 1px solid #dfe1e6;
+   border: 1px solid var(--border-color);
    border-radius: 6px;
-   background: #fafafa;
-
+   background: var(--bg-secondary);
    display: flex;
    align-items: center;
    justify-content: center;
-
    overflow: hidden;
    transition: all 0.2s ease;
  }
 
  .attachment-card:hover .attachment-preview {
-   border-color: #0052cc;
-   box-shadow: 0 4px 10px rgba(9, 30, 66, 0.25);
+   border-color: var(--text-link);
+   box-shadow: var(--shadow-md);
  }
 
- /* IMAGE */
  .attachment-preview img {
    width: 100%;
    height: 100%;
    object-fit: cover;
  }
 
- /* PDF (FULL ICON CENTERED) */
  .attachment-pdf {
    display: flex;
    align-items: center;
@@ -521,20 +499,16 @@
    width: 48px;
    height: 48px;
    color: #de350b;
-   /* Jira PDF red */
  }
 
- /* FILE NAME BELOW BOX */
  .attachment-name {
    margin-top: 6px;
    font-size: 12px;
-   color: #172b4d;
+   color: var(--text-primary);
    text-align: center;
-
    display: -webkit-box;
    -webkit-line-clamp: 2;
    -webkit-box-orient: vertical;
-
    overflow: hidden;
    word-break: break-word;
  }
