@@ -3,7 +3,8 @@ import { toast } from "react-toastify";
 import "./NewProject.css";
 import { generateUrn } from "../../utils/generateUrn";
 import RichTextEditor from "../RichTextEditor/RichTextEditor";
-import { createProjectApi } from "../../api/projects.api";
+import { createProjectApi, generateUploadUrl } from "../../api/projects.api";
+import axios from "axios"
 
 export default function NewProject() {
   const today = new Date().toISOString().split("T")[0];
@@ -30,7 +31,15 @@ export default function NewProject() {
     ahjName: "",
   });
 
-  const [attachments, setAttachments] = useState<File[]>([]);
+  // const [attachments, setAttachments] = useState<File[]>([]);
+  const [attachments, setAttachments] = useState<
+  {
+    file: File;
+    progress: number;
+    url?: string;
+    public_id?: string;
+  }[]
+>([]);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (
@@ -45,21 +54,81 @@ export default function NewProject() {
     setProjectDetails({ ...projectDetails, [e.target.name]: e.target.value });
   };
 
-  const handleFileChange = (files: FileList | null) => {
+  // const handleFileChange = (files: FileList | null) => {
+  //   if (!files) return;
+
+  //   const MAX_SIZE = 6 * 1024 * 1024; // 5MB
+
+  //   for (const file of Array.from(files)) {
+  //     if (file.size > MAX_SIZE) {
+  //       toast.error(`"${file.name}" exceeds 5MB limit`);
+  //       return;
+  //     }
+  //   }
+
+  //   setAttachments(Array.from(files));
+  // };
+  const handleFileChange = async (files: FileList | null) => {
     if (!files) return;
 
-    const MAX_SIZE = 6 * 1024 * 1024; // 5MB
+    const MAX_SIZE = 300 * 1024 * 1024; // ✅ 300MB
 
     for (const file of Array.from(files)) {
       if (file.size > MAX_SIZE) {
-        toast.error(`"${file.name}" exceeds 5MB limit`);
-        return;
+        toast.error(`"${file.name}" exceeds 300MB limit`);
+        continue;
+      }
+
+      const newFile = { file, progress: 0 };
+      setAttachments((prev) => [...prev, newFile]);
+
+      try {
+        // 1️⃣ Get signed URL
+        const res= await generateUploadUrl({
+          fileName : file.name,
+          fileType: file.type,
+        });
+        console.log("🚀 ~ handleFileChange ~ data:", res)
+
+        const { uploadUrl, fileUrl, key } =res;
+
+        // 2️⃣ Upload to S3
+        await axios.put(uploadUrl, file, {
+          headers: { "Content-Type": file.type },
+          onUploadProgress: (progressEvent) => {
+            const percent = Math.round(
+              (progressEvent.loaded * 100) / (progressEvent.total || 1)
+            );
+
+            setAttachments((prev) =>
+            prev.map((f) =>
+              f.file === file
+                ? {
+                    ...f,
+                    url: fileUrl,
+                    public_id: key,
+                    progress: 100,
+                  }
+                : f
+            )
+          );
+          },
+        });
+
+        // 3️⃣ Save final URL
+        setAttachments((prev) =>
+          prev.map((f) =>
+            f.file === file ? { ...f, url: fileUrl, progress: 100 } : f
+          )
+        );
+
+        toast.success(`${file.name} uploaded`);
+      } catch (err) {
+        console.log("🚀 ~ handleFileChange ~ err:", err)
+        toast.error(`Failed to upload ${file.name}`);
       }
     }
-
-    setAttachments(Array.from(files));
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -70,27 +139,27 @@ export default function NewProject() {
     try {
       setLoading(true);
 
-      const formData = new FormData();
-      formData.append("name", form.name);
-      formData.append("description", form.description);
-      formData.append("status", form.status);
-      formData.append("startDate", form.startDate);
-      formData.append("dueDate", form.dueDate);
-      formData.append("owner", assignedUser._id);
-      formData.append("createdBy", user.id);
+      // const formData = new FormData();
+      // formData.append("name", form.name);
+      // formData.append("description", form.description);
+      // formData.append("status", form.status);
+      // formData.append("startDate", form.startDate);
+      // formData.append("dueDate", form.dueDate);
+      // formData.append("owner", assignedUser._id);
+      // formData.append("createdBy", user.id);
 
-      Object.entries(projectDetails).forEach(([key, value]) => {
-        formData.append(`projectDetails[${key}]`, value);
-      });
-
-      attachments.forEach((file) => {
-        formData.append("attachments", file);
-      });
-
-      const res: any = await createProjectApi(formData);
+      // Object.entries(projectDetails).forEach(([key, value]) => {
+      //   formData.append(`projectDetails[${key}]`, value);
+      // });
+      const uploadedFiles = attachments.filter((f) => f.url && f.public_id).map((f) => ({
+        url: f.url!,
+        public_id: f.public_id!,
+      }));
+      const payload = { ...form,  owner: assignedUser?._id, createdBy: user.id, projectDetails, attachments: uploadedFiles};
+      const res: any = await createProjectApi(payload);
 
       if (res) {
-        toast.success("Project created successfully 🎉");
+        toast.success("Project created successfully");
 
         setForm({
           name: "",
@@ -283,9 +352,18 @@ export default function NewProject() {
 
             {attachments.length > 0 && (
               <div className="attachment-list">
-                {attachments.map((file, i) => (
+                {attachments.map((item, i) => (
                   <div key={i} className="attachment-item">
-                    📎 {file.name}
+                    <div>{item.file.name}</div>
+
+                    <div className="progress-bar">
+                      <div
+                        className="progress-fill"
+                        style={{ width: `${item.progress}%` }}
+                      />
+                    </div>
+
+                    <small>{item.progress}%</small>
                   </div>
                 ))}
               </div>

@@ -29,8 +29,17 @@ export const tagClientApi = (search: string) => {
   });
 };
 
-export const createProjectApi = (formData: FormData) => {
+export const createProjectApi = (formData: any) => {
   return axiosInstance.post("/createProject", formData);
+};
+
+// export const generateUploadUrl = (payload: Object) => {
+//   return axiosInstance.post("/generateUploadUrl", payload);
+// };
+export const generateUploadUrl = async (
+  payload: Object
+): Promise<GenerateUploadUrlResponse> => {
+  return axiosInstance.post("/generateUploadUrl", payload);
 };
 
 export interface ProjectsApiResponse {
@@ -40,4 +49,10 @@ export interface ProjectsApiResponse {
     totalItems: number;
     currentPage: number;
   };
+}
+
+export interface GenerateUploadUrlResponse {
+  uploadUrl: string;
+  key: string;
+  fileUrl: string;
 }

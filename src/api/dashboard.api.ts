@@ -8,9 +8,6 @@ export const getUserInfoApi = (userId: string) => {
 
 export const getDashboardDataApi = (userId: string) => {
     return axiosInstance.get(`/getDashboardData`, {
-        params: { userId },
-        headers: {
-            urn: Date.now().toString(),
-        },
+        params: { userId }
     });
 };
