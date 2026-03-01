@@ -389,6 +389,8 @@ import {
   getProjectsApi,
   updateProjectApi,
   tagUserApi,
+  generateUploadUrl,
+  uploadFileToS3Api
 } from "../../api/projects.api";
 import { getTasksApi } from "../../api/tasks.api";
 
@@ -414,7 +416,7 @@ export default function ProjectDetails() {
   // const [descDraft, setDescDraft] = useState("");
 
   const [commentText, setCommentText] = useState("");
-  // const [uploading, setUploading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [showTasks, setShowTasks] = useState(true);
 
   // project technical details edit
@@ -483,23 +485,45 @@ export default function ProjectDetails() {
   };
 
   const uploadAttachments = async (files: FileList | null) => {
-    if (!files) return;
+    if (!files || files.length === 0) return;
 
-    for (const f of Array.from(files)) {
-      if (f.size > 5 * 1024 * 1024) {
-        toast.error(`${f.name} exceeds 5MB`);
-        return;
+    const MAX_SIZE = 300 * 1024 * 1024; // 300MB
+    const newAttachments: { url: string; public_id: string }[] = [];
+
+    setUploading(true);
+
+    for (const file of Array.from(files)) {
+      if (file.size > MAX_SIZE) {
+        toast.error(`"${file.name}" exceeds 300MB limit`);
+        continue;
+      }
+
+      try {
+        const res: any = await generateUploadUrl({
+          fileName: file.name,
+          fileType: file.type,
+        });
+
+        const { uploadUrl, fileUrl, key } = res;
+
+        await uploadFileToS3Api(uploadUrl, file);
+
+        newAttachments.push({ url: fileUrl, public_id: key });
+        toast.success(`${file.name} uploaded`);
+      } catch (err) {
+        console.error("Upload error", err);
+        toast.error(`Failed to upload ${file.name}`);
       }
     }
 
-    const fd = new FormData();
-    fd.append("projectId", projectId!);
-    fd.append("userId", USER_ID);
-    Array.from(files).forEach((f) => fd.append("attachments", f));
+    if (newAttachments.length > 0) {
+      const existingAttachments = project.attachments || [];
+      const updatedAttachments = [...existingAttachments, ...newAttachments];
 
-    // setUploading(true);
-    await updateProject(fd, true);
-    // setUploading(false);
+      await updateProject({ attachments: updatedAttachments });
+    }
+
+    setUploading(false);
   };
 
   const fileName = (url: string) => {
@@ -855,12 +879,13 @@ export default function ProjectDetails() {
                 )}
 
                 {/* ADD ATTACHMENT — MUST BE INSIDE SAME FRAGMENT */}
-                <label className="attach-btn">
-                  + Add attachment
+                <label className="attach-btn" style={{ opacity: uploading ? 0.6 : 1, cursor: uploading ? 'not-allowed' : 'pointer' }}>
+                  {uploading ? "Uploading..." : "+ Add attachment"}
                   <input
                     type="file"
                     multiple
                     hidden
+                    disabled={uploading}
                     onChange={(e) => uploadAttachments(e.target.files)}
                   />
                 </label>

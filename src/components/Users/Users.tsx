@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import axios from "axios";
-import { generateUrn } from "../../utils/generateUrn";
 import { toast } from "react-toastify";
+import { getUsersApi, registerUserApi } from "../../api/users.api";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "./Users.css";
 
 export default function Users() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const token = localStorage.getItem("token");
 
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -56,25 +54,16 @@ export default function Users() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/getUsers`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            urn: generateUrn(),
-          },
-          params: {
-            userId: user.id,
-            page,
-            limit: 10,
-            search,
-            role,
-          },
-        }
-      );
+      const res: any = await getUsersApi({
+        userId: user.id,
+        page,
+        limit: 10,
+        search,
+        role,
+      });
 
-      setUsers(res.data?.apiResponseData?.list || []);
-      setPagination(res.data?.apiResponseData?.pagination || {});
+      setUsers(res.list || []);
+      setPagination(res.pagination || {});
     } catch {
       toast.error("Failed to load users");
     } finally {
@@ -162,24 +151,14 @@ export default function Users() {
       fd.append("creatorId", user.id);
       if (profilePic) fd.append("profilePic", profilePic);
 
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/registerUser`,
-        fd,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            urn: generateUrn(),
-          },
-        }
-      );
+      await registerUserApi(fd);
 
-      if (res.data?.responseCode == 200 || res.data?.responseCode == 201) {
-        toast.success("User created successfully");
-        handleModalClose(); // Use the handler to reset everything properly
-        fetchUsers();
-      } else {
-        toast.error(res.data?.responseMessage || "Something went wrong");
-      }
+      // axiosInstance intercepts response so res is already data.apiResponseData usually,
+      // but let's check if the base format is returned or just success.
+      // Usually axiosInstance throws if responseCode != 200|201
+      toast.success("User created successfully");
+      handleModalClose();
+      fetchUsers();
     } catch {
       toast.error("Failed to create user");
     } finally {

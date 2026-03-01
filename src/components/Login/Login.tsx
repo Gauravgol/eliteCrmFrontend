@@ -1,6 +1,6 @@
 import { useState } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
+import { loginApi } from "../../api/auth.api";
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "../../context/SocketContext";
 
@@ -22,18 +22,10 @@ export default function Login() {
     try {
       setLoading(true);
 
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/login`,
-        { email, password },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            urn: Math.floor(Math.random() * 10 ** 13).toString(), 
-          },
-        }
-      );
+      const urn = Math.floor(Math.random() * 10 ** 13).toString();
+      const response: any = await loginApi({ email, password }, urn);
 
-      const { responseCode, responseMessage, apiResponseData } = response.data;
+      const { responseCode, responseMessage, apiResponseData } = response;
 
       if (responseCode === 200) {
         toast.success(responseMessage || "Login successful");

@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
 import "./Chatpage.css";
 import { useSocket } from "../../context/SocketContext";
-
-const API_URL = import.meta.env.VITE_API_BASE_URL;
+import { getChatUsersApi, getChatMessagesApi } from "../../api/chat.api";
 
 export default function Chatpage() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -52,10 +50,8 @@ export default function Chatpage() {
 
   const fetchChatUsers = async (searchText = "") => {
     try {
-      const res = await axios.get(`${API_URL}/getChatUsers`, {
-        params: { userId: user.id, search: searchText },
-      });
-      setUsers(res.data?.apiResponseData || []);
+      const res: any = await getChatUsersApi(user.id, searchText);
+      setUsers(res.list || res || []);
     } catch (error) {
       console.error("Failed to fetch chat users", error);
     }
@@ -78,15 +74,9 @@ export default function Chatpage() {
 
   const loadInitialMessages = async (otherUserId: string) => {
     try {
-      const res = await axios.get(`${API_URL}/getChatMessages`, {
-        params: {
-          userId: user.id,
-          otherUserId,
-          limit: 20,
-        },
-      });
+      const res: any = await getChatMessagesApi(user.id, otherUserId, 20);
 
-      const data = res.data?.apiResponseData || [];
+      const data = res || [];
       setMessages(data.reverse());
       setHasMore(data.length === 20);
     } catch (error) {
@@ -102,16 +92,14 @@ export default function Chatpage() {
     const prevHeight = chatRef.current!.scrollHeight;
 
     try {
-      const res = await axios.get(`${API_URL}/getChatMessages`, {
-        params: {
-          userId: user.id,
-          otherUserId: selectedUser._id,
-          limit: 20,
-          before: oldest.createdAt,
-        },
-      });
+      const res: any = await getChatMessagesApi(
+        user.id,
+        selectedUser._id,
+        20,
+        oldest.createdAt
+      );
 
-      const data = res.data?.apiResponseData || [];
+      const data = res || [];
       if (data.length < 20) setHasMore(false);
 
       setMessages((prev) => [...data.reverse(), ...prev]);

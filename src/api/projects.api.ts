@@ -56,3 +56,11 @@ export interface GenerateUploadUrlResponse {
   key: string;
   fileUrl: string;
 }
+
+export const uploadFileToS3Api = (uploadUrl: string, file: File) => {
+  return fetch(uploadUrl, {
+    method: "PUT",
+    headers: { "Content-Type": file.type },
+    body: file,
+  });
+};

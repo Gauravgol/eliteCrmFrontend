@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
+import { getMenuApi } from "../../api/dashboard.api";
 import {
   FaTachometerAlt,
   FaFolderOpen,
@@ -24,7 +24,6 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
   const navigate = useNavigate();
 
   const storedUser = localStorage.getItem("user");
-  const token = localStorage.getItem("token");
   const user = storedUser ? JSON.parse(storedUser) : null;
 
   const [menu, setMenu] = useState<MenuItem[]>([]);
@@ -32,17 +31,8 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/getMenu?userId=${user.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              urn: "sidebar-menu"
-            }
-          }
-        );
-
-        setMenu(res.data.apiResponseData?.menu || []);
+        const res: any = await getMenuApi(user.id);
+        setMenu(res.menu || []);
       } catch (e) {
         toast.error("Failed to load sidebar menu");
       }

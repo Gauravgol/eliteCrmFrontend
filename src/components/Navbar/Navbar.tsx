@@ -153,6 +153,14 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
       <div>  <p className="nav-title">Solar Sync Solutions</p></div>
       {/* Right side icons */}
       <div className="nav-right-icons">
+        {/* Theme Toggle */}
+        <div style={{ display: "flex", alignItems: "center", cursor: "pointer", marginRight: "10px" }} onClick={toggleTheme}>
+          {theme === "light" ? (
+            <i className="bi bi-moon-fill" style={{ fontSize: "1.2rem", color: "var(--navbar-text)" }} title="Switch to Dark Mode"></i>
+          ) : (
+            <i className="bi bi-sun-fill" style={{ fontSize: "1.2rem", color: "var(--navbar-text)" }} title="Switch to Light Mode"></i>
+          )}
+        </div>
         {/* Notification Bell */}
         <div className="notification-wrapper">
           <i
@@ -229,10 +237,6 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
             <div className="profile-dropdown">
               <div className="dropdown-item">Profile</div>
               <div className="dropdown-item">Settings</div>
-              <div className="dropdown-item theme-toggle" onClick={(e) => { e.stopPropagation(); toggleTheme(); }}>
-                <i className={`bi ${theme === "light" ? "bi-moon-fill" : "bi-sun-fill"}`}></i>
-                {theme === "light" ? " Dark Mode" : " Light Mode"}
-              </div>
               <div className="dropdown-item logout" onClick={() => handleLogout()}>
                 Logout
               </div>

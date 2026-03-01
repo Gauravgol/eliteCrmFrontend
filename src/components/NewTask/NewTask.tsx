@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { toast } from "react-toastify";
-import { generateUrn } from "../../utils/generateUrn";
+import { tagUserApi } from "../../api/projects.api";
+import { createTaskApi } from "../../api/tasks.api";
 import "./NewTask.css";
 import RichTextEditor from "../RichTextEditor/RichTextEditor";
 
@@ -11,7 +11,6 @@ export default function NewTask() {
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const token = localStorage.getItem("token");
 
   /* ---------------- ASSIGN STATES ---------------- */
   const [assignedUser, setAssignedUser] = useState<any>(null);
@@ -69,12 +68,8 @@ export default function NewTask() {
   /* -------- ASSIGN USERS -------- */
   const fetchUsersForAssign = async (search: string) => {
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/tagUser?search=${search}`,
-        { headers: { urn: generateUrn(13) } }
-      );
-      const json = await res.json();
-      setAssignList(json?.apiResponseData?.list || []);
+      const res: any = await tagUserApi(search);
+      setAssignList(res.list || []);
     } catch {
       toast.error("Failed to load users");
     }
@@ -138,18 +133,10 @@ export default function NewTask() {
         formData.append("attachments", file);
       });
 
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/createTask`,
-        formData,
-        { headers: { Authorization: `Bearer ${token}`, urn: generateUrn() } }
-      );
+      await createTaskApi(formData);
 
-      if (res.data?.responseCode === "200") {
-        toast.success("Task created successfully");
-        navigate(`/projects/${projectId}`);
-      } else {
-        toast.error(res.data?.responseMessage || "Failed to create task");
-      }
+      toast.success("Task created successfully");
+      navigate(`/projects/${projectId}`);
     } catch (error: any) {
       toast.error(error?.response?.data?.responseMessage || "Something went wrong");
     } finally {

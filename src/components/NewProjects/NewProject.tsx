@@ -1,13 +1,14 @@
 import { useState, useRef } from "react";
 import { toast } from "react-toastify";
 import "./NewProject.css";
-import { generateUrn } from "../../utils/generateUrn";
 import RichTextEditor from "../RichTextEditor/RichTextEditor";
-import { createProjectApi, generateUploadUrl } from "../../api/projects.api";
+import { createProjectApi, generateUploadUrl, tagClientApi } from "../../api/projects.api";
 import axios from "axios"
+import { useNavigate } from "react-router-dom";
 
 export default function NewProject() {
   const today = new Date().toISOString().split("T")[0];
+  const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
@@ -33,13 +34,13 @@ export default function NewProject() {
 
   // const [attachments, setAttachments] = useState<File[]>([]);
   const [attachments, setAttachments] = useState<
-  {
-    file: File;
-    progress: number;
-    url?: string;
-    public_id?: string;
-  }[]
->([]);
+    {
+      file: File;
+      progress: number;
+      url?: string;
+      public_id?: string;
+    }[]
+  >([]);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (
@@ -84,13 +85,13 @@ export default function NewProject() {
 
       try {
         // 1️⃣ Get signed URL
-        const res= await generateUploadUrl({
-          fileName : file.name,
+        const res = await generateUploadUrl({
+          fileName: file.name,
           fileType: file.type,
         });
         console.log("🚀 ~ handleFileChange ~ data:", res)
 
-        const { uploadUrl, fileUrl, key } =res;
+        const { uploadUrl, fileUrl, key } = res;
 
         // 2️⃣ Upload to S3
         await axios.put(uploadUrl, file, {
@@ -101,17 +102,17 @@ export default function NewProject() {
             );
 
             setAttachments((prev) =>
-            prev.map((f) =>
-              f.file === file
-                ? {
+              prev.map((f) =>
+                f.file === file
+                  ? {
                     ...f,
                     url: fileUrl,
                     public_id: key,
                     progress: 100,
                   }
-                : f
-            )
-          );
+                  : f
+              )
+            );
           },
         });
 
@@ -128,6 +129,10 @@ export default function NewProject() {
         toast.error(`Failed to upload ${file.name}`);
       }
     }
+  };
+
+  const handleRemoveAttachment = (indexToRemove: number) => {
+    setAttachments((prev) => prev.filter((_, i) => i !== indexToRemove));
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -155,7 +160,7 @@ export default function NewProject() {
         url: f.url!,
         public_id: f.public_id!,
       }));
-      const payload = { ...form,  owner: assignedUser?._id, createdBy: user.id, projectDetails, attachments: uploadedFiles};
+      const payload = { ...form, owner: assignedUser?._id, createdBy: user.id, projectDetails, attachments: uploadedFiles };
       const res: any = await createProjectApi(payload);
 
       if (res) {
@@ -180,6 +185,7 @@ export default function NewProject() {
           ahjName: "",
         });
         setAttachments([]);
+        navigate("/projects");
       } else {
         toast.error(res.data?.responseMessage || "Failed to create project");
       }
@@ -201,12 +207,8 @@ export default function NewProject() {
   /* -------- ASSIGN USERS -------- */
   const fetchUsersForAssign = async (search: string) => {
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/tagClient?search=${search}`,
-        { headers: { urn: generateUrn(13) } }
-      );
-      const json = await res.json();
-      setAssignList(json?.apiResponseData?.list || []);
+      const res: any = await tagClientApi(search);
+      setAssignList(res.list || []);
     } catch {
       toast.error("Failed to load users");
     }
@@ -354,7 +356,18 @@ export default function NewProject() {
               <div className="attachment-list">
                 {attachments.map((item, i) => (
                   <div key={i} className="attachment-item">
-                    <div>{item.file.name}</div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "5px" }}>
+                      <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1, marginRight: "10px" }}>
+                        {item.file.name}
+                      </span>
+                      <span
+                        onClick={() => handleRemoveAttachment(i)}
+                        style={{ cursor: "pointer", color: "var(--btn-danger-text, red)", fontWeight: "bold", fontSize: "16px", padding: "0 5px" }}
+                        title="Remove attachment"
+                      >
+                        &times;
+                      </span>
+                    </div>
 
                     <div className="progress-bar">
                       <div

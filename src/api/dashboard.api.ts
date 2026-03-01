@@ -11,3 +11,10 @@ export const getDashboardDataApi = (userId: string) => {
         params: { userId }
     });
 };
+
+export const getMenuApi = (userId: string) => {
+    return axiosInstance.get(`/getMenu`, {
+        params: { userId },
+        headers: { urn: "sidebar-menu" }
+    });
+};

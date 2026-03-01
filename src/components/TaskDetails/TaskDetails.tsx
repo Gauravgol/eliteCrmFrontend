@@ -1,10 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import "./TaskDetails.css";
-import { generateUrn } from "../../utils/generateUrn";
 import { toast } from "react-toastify";
 import moment from "moment-timezone";
 import RichTextEditor from "../RichTextEditor/RichTextEditor";
+import { getTasksApi, updateTaskApi } from "../../api/tasks.api";
+import { tagUserApi } from "../../api/projects.api";
 
 
 export default function TaskDetails() {
@@ -43,12 +44,8 @@ export default function TaskDetails() {
 
   const fetchUsersForMention = async (search: string) => {
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/tagUser?search=${search}`,
-        { headers: { urn: generateUrn(13) } }
-      );
-      const json = await res.json();
-      setMentionList(json?.apiResponseData?.list || []);
+      const data: any = await tagUserApi(search);
+      setMentionList(data.list || []);
     } catch {
       toast.error("Failed to load users");
     }
@@ -75,12 +72,8 @@ export default function TaskDetails() {
   const fetchTask = async () => {
     try {
       setLoading(true);
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/getTask?taskId=${taskId}`,
-        { headers: { urn: generateUrn(13) } }
-      );
-      const json = await res.json();
-      setTask(json?.apiResponseData?.list?.[0] || null);
+      const res: any = await getTasksApi({ taskId } as any);
+      setTask(res.list?.[0] || null);
     } catch {
       setError("Failed to load task");
     } finally {
@@ -109,24 +102,7 @@ export default function TaskDetails() {
   const updateTaskField = async (payload: Record<string, any>) => {
     try {
       setUpdating(true);
-
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/updateTask`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            urn: "1234567890123",
-          },
-          body: JSON.stringify({ taskId, ...payload }),
-        }
-      );
-
-      const json = await res.json();
-
-      if (json?.responseCode !== "200") {
-        throw new Error("Update failed");
-      }
+      await updateTaskApi({ taskId, ...payload });
 
       await fetchTask();
       setEditingField(null);
@@ -161,22 +137,7 @@ export default function TaskDetails() {
         formData.append("attachments", file);
       });
 
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/updateTask`,
-        {
-          method: "PUT",
-          headers: {
-            urn: generateUrn(13),
-          },
-          body: formData,
-        }
-      );
-
-      const json = await res.json();
-
-      if (json?.responseCode !== "200") {
-        throw new Error("Upload failed");
-      }
+      await updateTaskApi(formData, true);
 
       // 🔥 Refresh from backend
       await fetchTask();
@@ -189,12 +150,8 @@ export default function TaskDetails() {
 
   const fetchUsersForAssign = async (search: string) => {
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/tagUser?search=${search}`,
-        { headers: { urn: generateUrn(13) } }
-      );
-      const json = await res.json();
-      setAssignList(json?.apiResponseData?.list || []);
+      const data: any = await tagUserApi(search);
+      setAssignList(data.list || []);
     } catch {
       toast.error("Failed to load users");
     }
