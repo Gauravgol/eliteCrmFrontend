@@ -108,7 +108,7 @@ export default function NewProject() {
                     ...f,
                     url: fileUrl,
                     public_id: key,
-                    progress: 100,
+                    progress: percent,
                   }
                   : f
               )
