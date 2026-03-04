@@ -1,10 +1,9 @@
 import axiosInstance from "./axiosInstance";
 
-export const loginApi = (payload: any, urn: string) => {
+export const loginApi = (payload: any) => {
     return axiosInstance.post("/login", payload, {
         headers: {
-            "Content-Type": "application/json",
-            urn,
+            "Content-Type": "application/json"
         },
     });
 };

@@ -16,7 +16,8 @@ axiosInstance.interceptors.request.use(
     const urn = generateUrn(Number(import.meta.env.VITE_URN_LENGTH || 13));
     config.headers['urn'] = urn;
     const token = localStorage.getItem("token");
-    if (!token) {
+    // Allow login request without token
+    if (!token && !(config.url?.includes("/login"))) {
       localStorage.clear();
       toast.error("Session expired. Please login again.");
       setTimeout(() => {
@@ -27,7 +28,7 @@ axiosInstance.interceptors.request.use(
 
     config.headers["Authorization"] = `Bearer ${token}`;
 
-    console.log(`Request [${config.method?.toUpperCase()}] to ${config.url}`, { urn });
+    // console.log(`Request [${config.method?.toUpperCase()}] to ${config.url}`, { urn });
 
     return config;
   },
