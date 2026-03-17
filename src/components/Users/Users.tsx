@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { toast } from "react-toastify";
-import { getUsersApi, registerUserApi } from "../../api/users.api";
+import { changePasswordApi, getUsersApi, registerUserApi } from "../../api/users.api";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "./Users.css";
 
@@ -18,6 +18,11 @@ export default function Users() {
 
   const [showModal, setShowModal] = useState(false);
   const [creating, setCreating] = useState(false);
+
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({ userId: "", password: "" });
+  const [passwordError, setPasswordError] = useState("");
+  const [updatingPassword, setUpdatingPassword] = useState(false);
 
   // Form states
   const [form, setForm] = useState<any>({
@@ -217,10 +222,73 @@ export default function Users() {
                   <span className="muted">{u.phone || "No phone"}</span>
                 </div>
                 <div className={`role-badge ${u.role}`}>{u.role}</div>
+                <button
+                  className="btn-submit"
+                  onClick={() => {
+                    setPasswordForm({ userId: u._id, password: "" });
+                    setPasswordError("");
+                    setShowPasswordModal(true);
+                  }}
+                >
+                  Change Password
+                </button>
               </div>
             ))
           )}
         </div>
+
+        {/* PASSWORD MODAL */}
+        {showPasswordModal &&
+          createPortal(
+            <div className="modal-overlay" onClick={() => setShowPasswordModal(false)}>
+              <div className="user-modal" onClick={(e) => e.stopPropagation()}>
+                <h3>Change Password</h3>
+
+                <div className="form-group">
+                  <label>New Password</label>
+                  <div className="password-wrapper">
+                    <input
+                      type="password"
+                      placeholder="Enter new password"
+                      value={passwordForm.password}
+                      onChange={e => setPasswordForm({ ...passwordForm, password: e.target.value })}
+                      className={passwordError ? "input-error" : ""}
+                    />
+                  </div>
+                  {passwordError && <span className="error-text">{passwordError}</span>}
+                </div>
+
+                <div className="modal-actions">
+                  <button className="btn-cancel" onClick={() => setShowPasswordModal(false)}>
+                    Cancel
+                  </button>
+                  <button
+                    className="btn-submit"
+                    disabled={updatingPassword}
+                    onClick={async () => {
+                      if (!passwordForm.password) {
+                        setPasswordError("Password is required");
+                        return;
+                      }
+                      setUpdatingPassword(true);
+                      try {
+                        await changePasswordApi(passwordForm);
+                        toast.success("Password changed successfully");
+                        setShowPasswordModal(false);
+                      } catch (err: any) {
+                        toast.error("Failed to update password");
+                      } finally {
+                        setUpdatingPassword(false);
+                      }
+                    }}
+                  >
+                    {updatingPassword ? "Updating..." : "Update Password"}
+                  </button>
+                </div>
+              </div>
+            </div>,
+            document.body
+          )}
 
         {/* PAGINATION */}
         <div className="pagination">
@@ -263,6 +331,7 @@ export default function Users() {
                       onChange={e => setForm({ ...form, email: e.target.value })}
                       className={errors.email ? "input-error" : ""}
                     />
+                    
                     {errors.email && <span className="error-text">{errors.email}</span>}
                   </div>
 

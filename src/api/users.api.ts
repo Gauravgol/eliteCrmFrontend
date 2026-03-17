@@ -17,3 +17,12 @@ export const registerUserApi = (formData: FormData) => {
         },
     });
 };
+
+export const changePasswordApi = (data: { userId: string; password: string }) => {
+  return axiosInstance.post(`/updatePassword`, data, {
+    headers: {
+      "urn": generateUrn(),
+      "Content-Type": "application/json",
+    },
+  });
+};
